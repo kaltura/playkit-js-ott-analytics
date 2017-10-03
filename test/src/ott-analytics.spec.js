@@ -57,7 +57,7 @@ describe('OttAnalyticsPlugin', function () {
     }
   );
 
-  beforeEach(function () {
+  /*beforeEach(function () {
     sandbox = sinon.sandbox.create();
     sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
     player = loadPlayer(config);
@@ -141,7 +141,7 @@ describe('OttAnalyticsPlugin', function () {
       done();
     });
     player.load();
-  });
+  });*/
 
 
 
