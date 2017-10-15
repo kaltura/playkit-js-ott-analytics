@@ -26,14 +26,14 @@ export default class OttAnalytics extends BasePlugin {
     return true;
   }
 
-  _isPlaying: Boolean;
-  _concurrentFlag: Boolean;
+  _isPlaying: boolean;
+  _concurrentFlag: boolean;
   _fileId: number;
-  _didFirstPlay: Boolean;
+  _didFirstPlay: boolean;
   _mediaHitInterval: number;
   _continueTime: number;
-  _playFromContinue: Boolean;
-  _isPlaying: Boolean;
+  _playFromContinue: boolean;
+  _isPlaying: boolean;
 
 
   /**
@@ -52,10 +52,11 @@ export default class OttAnalytics extends BasePlugin {
     super(name, player, config);
     this._initializeMembers();
     this._registerListeners();
+    this._sendAnalytics('LOAD', this._eventParams);
 
-    player.ready().then(() => {
+   /* player.ready().then(() => {
       this._sendAnalytics('LOAD', this._eventParams);
-    });
+    });*/
   }
 
   /**
@@ -77,7 +78,8 @@ export default class OttAnalytics extends BasePlugin {
     this.eventManager.listen(this.player, PlayerEvent.PLAY, this._onPlay.bind(this));
     this.eventManager.listen(this.player, PlayerEvent.PAUSE, this._onPause.bind(this));
     this.eventManager.listen(this.player, PlayerEvent.ENDED, this._onEnded.bind(this));
-    this.eventManager.listen(this.player, PlayerEvent.SEEKED, this._onSeeked().bind(this));
+    this.eventManager.listen(this.player, PlayerEvent.SEEKED,this._onSeeked.bind(this));
+    this.eventManager.listen(this.player, PlayerEvent.SEEKED,this._onSeeked.bind(this));
   }
 
   /**
@@ -112,6 +114,7 @@ export default class OttAnalytics extends BasePlugin {
    */
   _onEnded(): void {
     this._isPlaying = false;
+    this._clearMediaHitInterval();
     this._sendAnalytics('FINISH', this._eventParams);
   }
 
@@ -135,6 +138,15 @@ export default class OttAnalytics extends BasePlugin {
     this._playFromContinue = false;
   }
 
+  /**
+   * Send seek analytic
+   * @private
+   * @return {void}
+   */
+  _onVideoTrackChanged(): void {
+    this._sendAnalytics("BITRATE_CHANGE", this._eventParams);
+  }
+
 
   /**
    * Get the player params which relevant to analytics request
@@ -153,7 +165,8 @@ export default class OttAnalytics extends BasePlugin {
 
   /**
    * Register the player event listeners
-   * @param {number} eventType - The event type
+   * @param {string} action - The action
+   * @param {string} params - The params
    * @private
    * @return {void}
    */
@@ -184,7 +197,7 @@ export default class OttAnalytics extends BasePlugin {
 
         },
         err => {
-          this.logger.error(`Failed to send analytics event `, statsEvent, err);
+          this.logger.error(`Failed to send analytics event `, bookMark, err);
         });
   }
 
@@ -198,7 +211,7 @@ export default class OttAnalytics extends BasePlugin {
           return;
         }
         else {
-          this._sendAnalytics("HIT", _this._eventParams);
+          _this._sendAnalytics("HIT", _this._eventParams);
         }
 
       }
