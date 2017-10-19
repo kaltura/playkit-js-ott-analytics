@@ -53,10 +53,6 @@ export default class OttAnalytics extends BasePlugin {
     this._initializeMembers();
     this._registerListeners();
     this._sendAnalytics('LOAD', this._eventParams);
-
-   /* player.ready().then(() => {
-      this._sendAnalytics('LOAD', this._eventParams);
-    });*/
   }
 
   /**
@@ -78,8 +74,9 @@ export default class OttAnalytics extends BasePlugin {
     this.eventManager.listen(this.player, PlayerEvent.PLAY, this._onPlay.bind(this));
     this.eventManager.listen(this.player, PlayerEvent.PAUSE, this._onPause.bind(this));
     this.eventManager.listen(this.player, PlayerEvent.ENDED, this._onEnded.bind(this));
-    this.eventManager.listen(this.player, PlayerEvent.SEEKED,this._onSeeked.bind(this));
-    this.eventManager.listen(this.player, PlayerEvent.SEEKED,this._onSeeked.bind(this));
+    this.eventManager.listen(this.player, PlayerEvent.SEEKED, this._onSeeked.bind(this));
+    this.eventManager.listen(this.player, PlayerEvent.VIDEO_TRACK_CHANGED, this._onVideoTrackChanged.bind(this));
+    this.eventManager.listen(this.player, PlayerEvent.CHANGE_SOURCE_STARTED, this._onChangeSourceStarted.bind(this));
   }
 
   /**
@@ -100,8 +97,6 @@ export default class OttAnalytics extends BasePlugin {
    */
   _onPause(): void {
     this._isPlaying = false;
-    // During player start up, the player trigger "onpause" events
-    // We use didFirstPlay flag to ignore them
     if (this._didFirstPlay) {
       this._sendAnalytics('PAUSE', this._eventParams);
     }
@@ -130,7 +125,7 @@ export default class OttAnalytics extends BasePlugin {
   }
 
   /**
-   * Send seek analytic
+   * Sets _playFromContinue to false on seeked event
    * @private
    * @return {void}
    */
@@ -139,12 +134,21 @@ export default class OttAnalytics extends BasePlugin {
   }
 
   /**
-   * Send seek analytic
+   * Send bitrate_change analytic
    * @private
    * @return {void}
    */
   _onVideoTrackChanged(): void {
     this._sendAnalytics("BITRATE_CHANGE", this._eventParams);
+  }
+
+  /**
+   * Sets _didFirstPlay to false on media change
+   * @private
+   * @return {void}
+   */
+  _onChangeSourceStarted(): void {
+    this._didFirstPlay = false;
   }
 
 

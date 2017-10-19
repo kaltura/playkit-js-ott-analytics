@@ -28,13 +28,13 @@ describe('OttAnalyticsPlugin', function () {
         name: "I Am Legend",
         session: {
           partnerID: 198,
-          ks: "djJ8MTk4fCrazdfPq20pi3nT4doGK16zOLAGteLKufJYsdB0U4W4NnplgIfZpeMpsiTZBbj6WaKi7n2p0_M7WRMjA4gGEQCP0gh2LjlB5vW_kdfmnYPxAgHU-l4VQHIcNobc3v-Fv4aPaaCTak2ZYHuI5EO76Thvz3OyyKp9M_qs--ptrftnEpqAig8b5R0dv51y-v30Jw=="
+          ks: "djJ8MTk4fIZyV3tGa4IV2qpocPgh-tkxET2RA1H71et6EAzF5AO7ttun2lUlw_gUYlfizGM-U3POJCIpCqFYCi6-2U2R-CGMjfX19JqGU8s0wfjHh1jpsWDb8WGYKmPm7hW1adpWlkU_yQjhLPsZppFr87fTCdJbYNnz4E-a7lKFjx3dBnfWdhO7dDwx4RPGj6Yvy4jX3A=="
         },
         sources: {
           progressive: [
             {
               mimetype: "video/mp4",
-              url: "http://api-preprod.ott.kaltura.com/v4_6/api_v3/service/assetFile/action/playManifest/partnerId/198/assetId/258550/assetType/media/assetFileId/392026/contextType/PLAYBACK/ks/djJ8MTk4fCrazdfPq20pi3nT4doGK16zOLAGteLKufJYsdB0U4W4NnplgIfZpeMpsiTZBbj6WaKi7n2p0_M7WRMjA4gGEQCP0gh2LjlB5vW_kdfmnYPxAgHU-l4VQHIcNobc3v-Fv4aPaaCTak2ZYHuI5EO76Thvz3OyyKp9M_qs--ptrftnEpqAig8b5R0dv51y-v30Jw==/a.mp4",
+              url: "http://api-preprod.ott.kaltura.com/v4_6/api_v3/service/assetFile/action/playManifest/partnerId/198/assetId/258550/assetType/media/assetFileId/392026/contextType/PLAYBACK/ks/djJ8MTk4fIZyV3tGa4IV2qpocPgh-tkxET2RA1H71et6EAzF5AO7ttun2lUlw_gUYlfizGM-U3POJCIpCqFYCi6-2U2R-CGMjfX19JqGU8s0wfjHh1jpsWDb8WGYKmPm7hW1adpWlkU_yQjhLPsZppFr87fTCdJbYNnz4E-a7lKFjx3dBnfWdhO7dDwx4RPGj6Yvy4jX3A==/a.mp4",
               id: "392026,url"
             }
           ],
@@ -49,7 +49,7 @@ describe('OttAnalyticsPlugin', function () {
           'ottAnalytics': {
             entryId: 258550,
             fileId: "392026",
-            ks: "djJ8MTk4fCrazdfPq20pi3nT4doGK16zOLAGteLKufJYsdB0U4W4NnplgIfZpeMpsiTZBbj6WaKi7n2p0_M7WRMjA4gGEQCP0gh2LjlB5vW_kdfmnYPxAgHU-l4VQHIcNobc3v-Fv4aPaaCTak2ZYHuI5EO76Thvz3OyyKp9M_qs--ptrftnEpqAig8b5R0dv51y-v30Jw==",
+            ks: "djJ8MTk4fIZyV3tGa4IV2qpocPgh-tkxET2RA1H71et6EAzF5AO7ttun2lUlw_gUYlfizGM-U3POJCIpCqFYCi6-2U2R-CGMjfX19JqGU8s0wfjHh1jpsWDb8WGYKmPm7hW1adpWlkU_yQjhLPsZppFr87fTCdJbYNnz4E-a7lKFjx3dBnfWdhO7dDwx4RPGj6Yvy4jX3A==",
             partnerId: 198,
             mediaHitInterval: 2
           }
@@ -77,7 +77,7 @@ describe('OttAnalyticsPlugin', function () {
   });
 
 
- /* it('should send first play', (done) => {
+  it('should send first play', (done) => {
     player.addEventListener(player.Event.FIRST_PLAY, () => {
       let payload = JSON.parse(sendSpy.lastCall.args[0]);
       verifyPayloadProperties(payload.ks, payload.bookmark);
@@ -99,7 +99,6 @@ describe('OttAnalyticsPlugin', function () {
 
     });
 
-
   it('should send ended', (done) => {
     player.addEventListener(player.Event.FIRST_PLAY, () => {
       player.currentTime = player.duration - 1;
@@ -112,7 +111,6 @@ describe('OttAnalyticsPlugin', function () {
     });
     player.play();
   });
-
 
   it('should send media hit', (done) => {
     player.addEventListener(player.Event.FIRST_PLAY, () => {
@@ -127,6 +125,6 @@ describe('OttAnalyticsPlugin', function () {
       done();
     });
     player.play();
-  });*/
+  });
 
 });
