@@ -88,16 +88,18 @@ describe('OttAnalyticsPlugin', function () {
   });
 
   it('should send pause', (done) => {
-      player.addEventListener(player.Event.PAUSE, () => {
-        let payload = JSON.parse(sendSpy.lastCall.args[0]);
-        verifyPayloadProperties(payload.ks, payload.bookmark);
-        payload.bookmark.playerData.action.should.equal("PAUSE");
-        done();
-      });
-      player.play();
-      setTimeout(function(){ player.pause(); }, 1000);
-
+    player.addEventListener(player.Event.PAUSE, () => {
+      let payload = JSON.parse(sendSpy.lastCall.args[0]);
+      verifyPayloadProperties(payload.ks, payload.bookmark);
+      payload.bookmark.playerData.action.should.equal("PAUSE");
+      done();
     });
+    player.play();
+    setTimeout(function () {
+      player.pause();
+    }, 1000);
+
+  });
 
   it('should send ended', (done) => {
     player.addEventListener(player.Event.FIRST_PLAY, () => {
@@ -119,12 +121,11 @@ describe('OttAnalyticsPlugin', function () {
     player.addEventListener(player.Event.TIME_UPDATE, () => {
       let payload = JSON.parse(sendSpy.lastCall.args[0]);
       verifyPayloadProperties(payload.ks, payload.bookmark);
-      if(player.currentTime == 1.5){
+      if (player.currentTime == 1.5) {
         payload.bookmark.playerData.action.should.equal("HIT");
       }
       done();
     });
     player.play();
   });
-
 });

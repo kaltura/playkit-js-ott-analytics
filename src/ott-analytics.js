@@ -1,26 +1,37 @@
 //@flow
 import {BasePlugin, registerPlugin} from 'playkit-js'
-import BookMarkService from  'playkit-js-providers/dist/bookmarkService'
+import BookMarkService from 'playkit-js-providers/dist/bookmarkService'
 
-const pluginName = "ottAnalytics";
+const pluginName = 'ottAnalytics';
+const MEDIA_TYPE = 'MEDIA';
+const CONCURRENT = 'Concurrent';
+const AnalyticsEvent: { [event: string]: string } = {
+  LOAD: 'LOAD',
+  PLAY: 'PLAY',
+  PAUSE: 'PAUSE',
+  FINISH: 'FINISH',
+  FIRST_PLAY: 'FIRST_PLAY',
+  BITRATE_CHANGE: 'BITRATE_CHANGE',
+  HIT: 'HIT'
+};
 
-/**
- * @classdesc
- */
 export default class OttAnalytics extends BasePlugin {
   /**
+   * The default configuration of the plugin.
+   * @type {Object}
    * @static
    */
   static defaultConfig: Object = {
-    baseUrl: 'http://api-preprod.ott.kaltura.com/v4_6/api_v3',
+    cdnUrl: 'http://api-preprod.ott.kaltura.com/v4_6/api_v3',
     mediaHitInterval: 30,
     startTime: null
   };
 
   /**
+   * Whether the ima plugin is valid.
    * @static
+   * @override
    * @public
-   * @returns {boolean} - Whether the plugin is valid.
    */
   static isValid(): boolean {
     return true;
@@ -34,133 +45,127 @@ export default class OttAnalytics extends BasePlugin {
   _continueTime: number;
   _playFromContinue: boolean;
   _isPlaying: boolean;
-
-
-  /**
-   * The Kaltura session
-   * @private
-   */
   _ks: string;
 
   /**
    * @constructor
    * @param {string} name - The plugin name.
-   * @param {Player} player - The player reference.
-   * @param {Object} config - The plugin configuration.
+   * @param {Player} player - The player instance.
+   * @param {Object} config - The plugin config.
    */
   constructor(name: string, player: Player, config: Object) {
     super(name, player, config);
     this._initializeMembers();
     this._registerListeners();
-    this._sendAnalytics('LOAD', this._eventParams);
+    this._sendAnalytics(AnalyticsEvent.LOAD, this._eventParams);
   }
 
   /**
+   * Destroys the plugin.
+   * @override
    * @public
-   * @return {void}
+   * @returns {void}
    */
   destroy(): void {
     this.eventManager.destroy();
   }
 
   /**
-   * Register the player event listeners
+   * Registers the player listeners.
    * @private
-   * @return {void}
+   * @returns {void}
    */
   _registerListeners(): void {
-    let PlayerEvent = this.player.Event;
-    this.eventManager.listen(this.player, PlayerEvent.FIRST_PLAY, this._onFirstPlay.bind(this));
-    this.eventManager.listen(this.player, PlayerEvent.PLAY, this._onPlay.bind(this));
-    this.eventManager.listen(this.player, PlayerEvent.PAUSE, this._onPause.bind(this));
-    this.eventManager.listen(this.player, PlayerEvent.ENDED, this._onEnded.bind(this));
-    this.eventManager.listen(this.player, PlayerEvent.SEEKED, this._onSeeked.bind(this));
-    this.eventManager.listen(this.player, PlayerEvent.VIDEO_TRACK_CHANGED, this._onVideoTrackChanged.bind(this));
-    this.eventManager.listen(this.player, PlayerEvent.CHANGE_SOURCE_STARTED, this._onChangeSourceStarted.bind(this));
+    const PlayerEvent = this.player.Event;
+    this.eventManager.listen(this.player, PlayerEvent.FIRST_PLAY, () => this._onFirstPlay());
+    this.eventManager.listen(this.player, PlayerEvent.PLAY, () => this._onPlay());
+    this.eventManager.listen(this.player, PlayerEvent.PAUSE, () => this._onPause());
+    this.eventManager.listen(this.player, PlayerEvent.ENDED, () => this._onEnded());
+    this.eventManager.listen(this.player, PlayerEvent.SEEKED, () => this._onSeeked());
+    this.eventManager.listen(this.player, PlayerEvent.VIDEO_TRACK_CHANGED, () => this._onVideoTrackChanged());
+    this.eventManager.listen(this.player, PlayerEvent.CHANGE_SOURCE_STARTED, () => this._onChangeSourceStarted());
   }
 
   /**
-   * The play event listener
+   * The play event listener.
    * @private
-   * @return {void}
+   * @returns {void}
    */
   _onPlay(): void {
     this._isPlaying = true;
     this._startMediaHitInterval();
-    this._sendAnalytics('PLAY', this._eventParams);
+    this._sendAnalytics(AnalyticsEvent.PLAY, this._eventParams);
   }
 
   /**
-   * The pause event listener
+   * The pause event listener.
    * @private
-   * @return {void}
+   * @returns {void}
    */
   _onPause(): void {
     this._isPlaying = false;
     if (this._didFirstPlay) {
-      this._sendAnalytics('PAUSE', this._eventParams);
+      this._sendAnalytics(AnalyticsEvent.PAUSE, this._eventParams);
     }
   }
 
   /**
-   * The ended event listener
+   * The ended event listener.
    * @private
-   * @return {void}
+   * @returns {void}
    */
   _onEnded(): void {
     this._isPlaying = false;
     this._clearMediaHitInterval();
-    this._sendAnalytics('FINISH', this._eventParams);
+    this._sendAnalytics(AnalyticsEvent.FINISH, this._eventParams);
   }
 
   /**
-   * The first play event listener
+   * The first play event listener.
    * @private
-   * @return {void}
+   * @returns {void}
    */
   _onFirstPlay(): void {
     this._didFirstPlay = true;
-    this._sendAnalytics("FIRST_PLAY", this._eventParams);
-
+    this._sendAnalytics(AnalyticsEvent.FIRST_PLAY, this._eventParams);
   }
 
   /**
-   * Sets _playFromContinue to false on seeked event
+   * Sets _playFromContinue to false on seeked event.
    * @private
-   * @return {void}
+   * @returns {void}
    */
   _onSeeked(): void {
     this._playFromContinue = false;
   }
 
   /**
-   * Send bitrate_change analytic
+   * Send BITRATE_CHANGE analytic.
    * @private
-   * @return {void}
+   * @returns {void}
    */
   _onVideoTrackChanged(): void {
-    this._sendAnalytics("BITRATE_CHANGE", this._eventParams);
+    this._sendAnalytics(AnalyticsEvent.BITRATE_CHANGE, this._eventParams);
   }
 
   /**
-   * Sets _didFirstPlay to false on media change
+   * Sets _didFirstPlay to false on media change.
    * @private
-   * @return {void}
+   * @returns {void}
    */
   _onChangeSourceStarted(): void {
     this._didFirstPlay = false;
   }
 
-
   /**
-   * Get the player params which relevant to analytics request
+   * Get the player params which relevant to analytics request.
    * @private
-   * @return {Object} - The player params
+   * @returns {Object} - The player params
    */
   get _eventParams(): Object {
     this._ks = this.config.ks;
     return {
-      mediaType: "MEDIA",
+      mediaType: MEDIA_TYPE,
       mediaId: this.config.entryId,
       fileId: this.config.fileId,
       position: this.player.currentTime
@@ -168,69 +173,70 @@ export default class OttAnalytics extends BasePlugin {
   }
 
   /**
-   * Register the player event listeners
+   * Send analytics.
    * @param {string} action - The action
    * @param {string} params - The params
    * @private
-   * @return {void}
+   * @returns {void}
    */
   _sendAnalytics(action: string, params: Object): void {
-
-    let playerData: Object = {
+    const playerData: Object = {
       action: action,
       averageBitrate: 0, totalBitrate: 0,
       currentBitrate: 0, fileId: params.fileId,
     };
-
-    let bookMark: Object = {
+    const bookMark: Object = {
       type: params.mediaType,
       id: params.mediaId,
       position: params.position,
       playerData: playerData
     };
-
-    let request: RequestBuilder = BookMarkService.add(this.config.baseUrl, this._ks, bookMark); //StatsService.collect(this.config.playerVersion, this._ks, {"event": statsEvent}, this.config.baseUrl);
+    const request: RequestBuilder = BookMarkService.add(this.config.cdnUrl, this._ks, bookMark); //StatsService.collect(this.config.playerVersion, this._ks, {"event": statsEvent}, this.config.baseUrl);
     request.doHttpRequest()
       .then((data) => {
-          if (data == 'Concurrent') {
-            this._concurrentFlag = true;
-          }
-          else {
-            this.logger.debug(`Analytics event sent `, bookMark);
-          }
-
-        },
-        err => {
-          this.logger.error(`Failed to send analytics event `, bookMark, err);
-        });
+        if (data === CONCURRENT) {
+          this._concurrentFlag = true;
+        } else {
+          this.logger.debug('Analytics event sent', bookMark);
+        }
+      }, err => {
+        this.logger.error('Failed to send analytics event', bookMark, err);
+      });
   }
 
+  /**
+   * Starts the media hit interval.
+   * @private
+   * @returns {void}
+   */
   _startMediaHitInterval(): void {
-    let _this = this;
     this._clearMediaHitInterval();
-    this._mediaHitInterval = setInterval(function () {
-      if (_this._isPlaying) {
-        _this._playFromContinue = false;
-        if (_this._concurrentFlag || _this._eventParams.position == 0) {
+    this._mediaHitInterval = setInterval(() => {
+      if (this._isPlaying) {
+        this._playFromContinue = false;
+        if (this._concurrentFlag || this._eventParams.position === 0) {
           return;
+        } else {
+          this._sendAnalytics(AnalyticsEvent.HIT, this._eventParams);
         }
-        else {
-          _this._sendAnalytics("HIT", _this._eventParams);
-        }
-
       }
     }, this.config.mediaHitInterval * 1000);
   }
 
+  /**
+   * Clears the media hit interval.
+   * @private
+   * @returns {void}
+   */
   _clearMediaHitInterval(): void {
     clearInterval(this._mediaHitInterval);
     this._mediaHitInterval = 0;
   }
 
   /**
-   * Initialize the plugin members
+   * Initializes the class members.
    * @private
-   * @return {void}
+   * @returns {void}
    */
   _initializeMembers(): void {
     this._ks = "";
@@ -240,19 +246,14 @@ export default class OttAnalytics extends BasePlugin {
     this._didFirstPlay = false;
     this._mediaHitInterval = 0;
     this._isPlaying = false;
-
     if (this.config.startTime) {
       this._continueTime = this.config.startTime;
       this._playFromContinue = true;
-    }
-    else {
+    } else {
       this._continueTime = 0;
       this._playFromContinue = false;
     }
   }
 }
 
-/**
- * Register the plugin in the playkit-js plugin framework.
- */
 registerPlugin(pluginName, OttAnalytics);
