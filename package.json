@@ -1,31 +1,24 @@
 {
-  "name": "playkit-ott-analytics",
-  "version": "0.5.0",
+  "name": "playkit-js-ott-analytics",
+  "version": "0.0.1",
   "description": "",
-  "main": "dist/playkit-kanalytics.js",
+  "main": "dist/playkit-ott-analytics.js",
   "scripts": {
     "clean": "rm -rf ./dist",
     "prebuild": "npm run clean",
-    "build:prod": "NODE_ENV=production webpack",
-    "build": "webpack",
-    "dev": "webpack --progress --colors --watch",
+    "build": "NODE_ENV=production webpack",
+    "dev": "webpack-dev-server",
+    "watch": "webpack --progress --colors --watch",
     "test": "NODE_ENV=test karma start --color",
-    "test:chrome": "NODE_ENV=test karma start --color --browsers Chrome",
-    "test:chrome:dots": "NODE_ENV=test karma start --color --browsers Chrome --reporters dots",
-    "test:firefox": "NODE_ENV=test karma start --color --browsers Firefox",
-    "test:safari": "NODE_ENV=test karma start --color --browsers Safari",
-    "test:watch": "NODE_ENV=test karma start --color --auto-watch",
-    "start": "webpack-dev-server",
     "release": "standard-version",
     "publish": "git push --follow-tags --no-verify origin master",
     "eslint": "eslint . --color",
     "flow": "flow check",
-    "eslint:flow:test": "npm run eslint && npm run flow && npm run test",
     "commit:dist": "git add --force --all dist && (git commit -m 'chore: update dist' || exit 0)"
   },
   "standard-version": {
     "scripts": {
-      "postbump": "yarn run build && yarn run build:prod && npm run commit:dist"
+      "postbump": "yarn run build && npm run commit:dist"
     }
   },
   "devDependencies": {
@@ -60,8 +53,8 @@
     "karma-webpack": "^2.0.2",
     "mocha": "^3.2.0",
     "mocha-cli": "^1.0.1",
-    "playkit-js": "https://github.com/kaltura/playkit-js.git#v0.9.0",
-    "playkit-js-providers": "git+https://github.com/kaltura/playkit-js-providers.git#v1.3.1",
+    "playkit-js": "https://github.com/kaltura/playkit-js.git#v0.19.0",
+    "playkit-js-providers": "git+https://github.com/kaltura/playkit-js-providers.git#impliment-ott-provider",
     "pre-push": "^0.1.1",
     "sinon": "^2.0.0",
     "sinon-chai": "^2.8.0",
@@ -73,8 +66,8 @@
   "keywords": [],
   "license": "AGPL-3.0",
   "peerDependencies": {
-    "playkit-js": "https://github.com/kaltura/playkit-js.git#v0.9.0",
-    "playkit-js-providers": "https://github.com/kaltura/playkit-js-providers.git#v1.3.1"
+    "playkit-js": "https://github.com/kaltura/playkit-js.git#v0.19.0",
+    "playkit-js-providers": "https://github.com/kaltura/playkit-js-providers.git#impliment-ott-provider"
   },
   "repository": {
     "type": "git",

@@ -1,11 +1,11 @@
 //@flow
-import {BasePlugin, registerPlugin} from 'playkit-js'
+import {BasePlugin} from 'playkit-js'
 import BookMarkService from 'playkit-js-providers/dist/bookmarkService'
 
-const pluginName = 'ottAnalytics';
+type OttAnalyticsEventType = { [event: string]: string };
 const MEDIA_TYPE = 'MEDIA';
 const CONCURRENT = 'Concurrent';
-const AnalyticsEvent: { [event: string]: string } = {
+const OttAnalyticsEvent: OttAnalyticsEventType = {
   LOAD: 'LOAD',
   PLAY: 'PLAY',
   PAUSE: 'PAUSE',
@@ -57,7 +57,7 @@ export default class OttAnalytics extends BasePlugin {
     super(name, player, config);
     this._initializeMembers();
     this._registerListeners();
-    this._sendAnalytics(AnalyticsEvent.LOAD, this._eventParams);
+    this._sendAnalytics(OttAnalyticsEvent.LOAD, this._eventParams);
   }
 
   /**
@@ -94,7 +94,7 @@ export default class OttAnalytics extends BasePlugin {
   _onPlay(): void {
     this._isPlaying = true;
     this._startMediaHitInterval();
-    this._sendAnalytics(AnalyticsEvent.PLAY, this._eventParams);
+    this._sendAnalytics(OttAnalyticsEvent.PLAY, this._eventParams);
   }
 
   /**
@@ -105,7 +105,7 @@ export default class OttAnalytics extends BasePlugin {
   _onPause(): void {
     this._isPlaying = false;
     if (this._didFirstPlay) {
-      this._sendAnalytics(AnalyticsEvent.PAUSE, this._eventParams);
+      this._sendAnalytics(OttAnalyticsEvent.PAUSE, this._eventParams);
     }
   }
 
@@ -117,7 +117,7 @@ export default class OttAnalytics extends BasePlugin {
   _onEnded(): void {
     this._isPlaying = false;
     this._clearMediaHitInterval();
-    this._sendAnalytics(AnalyticsEvent.FINISH, this._eventParams);
+    this._sendAnalytics(OttAnalyticsEvent.FINISH, this._eventParams);
   }
 
   /**
@@ -127,7 +127,7 @@ export default class OttAnalytics extends BasePlugin {
    */
   _onFirstPlay(): void {
     this._didFirstPlay = true;
-    this._sendAnalytics(AnalyticsEvent.FIRST_PLAY, this._eventParams);
+    this._sendAnalytics(OttAnalyticsEvent.FIRST_PLAY, this._eventParams);
   }
 
   /**
@@ -145,7 +145,7 @@ export default class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   _onVideoTrackChanged(): void {
-    this._sendAnalytics(AnalyticsEvent.BITRATE_CHANGE, this._eventParams);
+    this._sendAnalytics(OttAnalyticsEvent.BITRATE_CHANGE, this._eventParams);
   }
 
   /**
@@ -200,7 +200,7 @@ export default class OttAnalytics extends BasePlugin {
           this.logger.debug('Analytics event sent', bookMark);
         }
       }, err => {
-        this.logger.error('Failed to send analytics event', bookMark, err);
+        this.logger.error('Faile`d to send analytics event', bookMark, err);
       });
   }
 
@@ -217,7 +217,7 @@ export default class OttAnalytics extends BasePlugin {
         if (this._concurrentFlag || this._eventParams.position === 0) {
           return;
         } else {
-          this._sendAnalytics(AnalyticsEvent.HIT, this._eventParams);
+          this._sendAnalytics(OttAnalyticsEvent.HIT, this._eventParams);
         }
       }
     }, this.config.mediaHitInterval * 1000);
@@ -255,5 +255,3 @@ export default class OttAnalytics extends BasePlugin {
     }
   }
 }
-
-registerPlugin(pluginName, OttAnalytics);

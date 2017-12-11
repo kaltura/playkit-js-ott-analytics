@@ -3,19 +3,31 @@
 const webpack = require("webpack");
 const path = require("path");
 const PROD = (process.env.NODE_ENV === 'production');
+const packageData = require("./package.json");
+
+let plugins = [
+  new webpack.DefinePlugin({
+    __VERSION__: JSON.stringify(packageData.version),
+    __NAME__: JSON.stringify(packageData.name)
+  })
+];
+
+if (PROD) {
+  plugins.push(new webpack.optimize.UglifyJsPlugin({sourceMap: true}));
+}
 
 module.exports = {
   context: __dirname + "/src",
-  entry: PROD ? {"playkit-ott-analytics.min": "ott-analytics.js"} : {"playkit-ott-analytics": "ott-analytics.js"},
+  entry: {"playkit-ott-analytics": "index.js"},
   output: {
     path: __dirname + "/dist",
     filename: '[name].js',
     library: "PlaykitJsOttAnalytics",
     libraryTarget: "umd",
-    devtoolModuleFilenameTemplate: "./ott-analytics/[resource-path]",
+    devtoolModuleFilenameTemplate: "./ott-analytics/[resource-path]"
   },
   devtool: 'source-map',
-  plugins: PROD ? [new webpack.optimize.UglifyJsPlugin({sourceMap: true})] : [],
+  plugins: plugins,
   module: {
     rules: [{
       test: /\.js$/,
@@ -28,6 +40,7 @@ module.exports = {
     }, {
       test: /\.js$/,
       exclude: [
+
         /node_modules/
       ],
       enforce: 'pre',
