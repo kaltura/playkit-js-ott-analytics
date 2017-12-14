@@ -45,7 +45,6 @@ export default class OttAnalytics extends BasePlugin {
   _continueTime: number;
   _playFromContinue: boolean;
   _isPlaying: boolean;
-  _ks: string;
 
   /**
    * @constructor
@@ -84,6 +83,24 @@ export default class OttAnalytics extends BasePlugin {
     this.eventManager.listen(this.player, PlayerEvent.SEEKED, () => this._onSeeked());
     this.eventManager.listen(this.player, PlayerEvent.VIDEO_TRACK_CHANGED, () => this._onVideoTrackChanged());
     this.eventManager.listen(this.player, PlayerEvent.CHANGE_SOURCE_STARTED, () => this._onChangeSourceStarted());
+    this.eventManager.listen(this.player, PlayerEvent.SOURCE_SELECTED, event => this._onSourceSelected(event));
+  }
+
+  /**
+   * The source selected event listener.
+   * @param {Object} event - The event object.
+   * @private
+   * @returns {void}
+   */
+  _onSourceSelected(event: Object): void {
+    try {
+      const source = event.payload.selectedSource[0];
+      const parts = source.id.split(',');
+      const id = parts[0];
+      this._fileId = parseInt(id);
+    } catch (e) {
+      this.logger.error(e);
+    }
   }
 
   /**
@@ -163,11 +180,10 @@ export default class OttAnalytics extends BasePlugin {
    * @returns {Object} - The player params
    */
   get _eventParams(): Object {
-    this._ks = this.config.ks;
     return {
       mediaType: MEDIA_TYPE,
+      fileId: this._fileId,
       mediaId: this.config.entryId,
-      fileId: this.config.fileId,
       position: this.player.currentTime
     };
   }
@@ -191,7 +207,7 @@ export default class OttAnalytics extends BasePlugin {
       position: params.position,
       playerData: playerData
     };
-    const request: RequestBuilder = BookMarkService.add(this.config.cdnUrl, this._ks, bookMark); //StatsService.collect(this.config.playerVersion, this._ks, {"event": statsEvent}, this.config.baseUrl);
+    const request: RequestBuilder = BookMarkService.add(this.config.cdnUrl, this.config.ks, bookMark); //StatsService.collect(this.config.playerVersion, this._ks, {"event": statsEvent}, this.config.baseUrl);
     request.doHttpRequest()
       .then((data) => {
         if (data === CONCURRENT) {
@@ -200,7 +216,7 @@ export default class OttAnalytics extends BasePlugin {
           this.logger.debug('Analytics event sent', bookMark);
         }
       }, err => {
-        this.logger.error('Faile`d to send analytics event', bookMark, err);
+        this.logger.error('Failed to send analytics event', bookMark, err);
       });
   }
 
@@ -239,7 +255,6 @@ export default class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   _initializeMembers(): void {
-    this._ks = "";
     this._isPlaying = false;
     this._concurrentFlag = false;
     this._fileId = 0;
