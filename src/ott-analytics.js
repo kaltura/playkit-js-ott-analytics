@@ -1,6 +1,6 @@
 //@flow
 import {BasePlugin} from 'playkit-js'
-import BookMarkService from 'playkit-js-providers/dist/bookmarkService'
+import {OTTBookmarkService, RequestBuilder} from 'playkit-js-providers/dist/playkit-bookmark-service'
 
 type OttAnalyticsEventType = { [event: string]: string };
 const MEDIA_TYPE = 'MEDIA';
@@ -22,7 +22,7 @@ export default class OttAnalytics extends BasePlugin {
    * @static
    */
   static defaultConfig: Object = {
-    cdnUrl: 'http://api-preprod.ott.kaltura.com/v4_6/api_v3',
+    serviceUrl: 'http://api-preprod.ott.kaltura.com/v4_6/api_v3',
     mediaHitInterval: 30,
     startTime: null
   };
@@ -207,7 +207,7 @@ export default class OttAnalytics extends BasePlugin {
       position: params.position,
       playerData: playerData
     };
-    const request: RequestBuilder = BookMarkService.add(this.config.cdnUrl, this.config.ks, bookMark); //StatsService.collect(this.config.playerVersion, this._ks, {"event": statsEvent}, this.config.baseUrl);
+    const request: RequestBuilder = OTTBookmarkService.add(this.config.serviceUrl, this.config.ks, bookMark);
     request.doHttpRequest()
       .then((data) => {
         if (data === CONCURRENT) {
