@@ -19,38 +19,53 @@ describe('OttAnalyticsPlugin', function () {
   }
 
   before(function () {
-      config = {
-        id: 258550,
-        name: "I Am Legend",
-        session: {
-          partnerID: 198,
-          ks: "djJ8MTk4fIZyV3tGa4IV2qpocPgh-tkxET2RA1H71et6EAzF5AO7ttun2lUlw_gUYlfizGM-U3POJCIpCqFYCi6-2U2R-CGMjfX19JqGU8s0wfjHh1jpsWDb8WGYKmPm7hW1adpWlkU_yQjhLPsZppFr87fTCdJbYNnz4E-a7lKFjx3dBnfWdhO7dDwx4RPGj6Yvy4jX3A=="
-        },
-        sources: {
-          progressive: [{
-            mimetype: "video/mp4",
-            url: "http://api-preprod.ott.kaltura.com/v4_6/api_v3/service/assetFile/action/playManifest/partnerId/198/assetId/258550/assetType/media/assetFileId/392026/contextType/PLAYBACK/ks/djJ8MTk4fIZyV3tGa4IV2qpocPgh-tkxET2RA1H71et6EAzF5AO7ttun2lUlw_gUYlfizGM-U3POJCIpCqFYCi6-2U2R-CGMjfX19JqGU8s0wfjHh1jpsWDb8WGYKmPm7hW1adpWlkU_yQjhLPsZppFr87fTCdJbYNnz4E-a7lKFjx3dBnfWdhO7dDwx4RPGj6Yvy4jX3A==/a.mp4",
-            id: "392026,url"
-          }],
-          dash: [],
-          hls: []
-        },
-        duration: 149.491,
-        type: "Unknown",
-        dvr: false,
-        metadata: {},
-        plugins: {
-          ottAnalytics: {
-            entryId: 258550,
-            fileId: "392026",
-            ks: "djJ8MTk4fIZyV3tGa4IV2qpocPgh-tkxET2RA1H71et6EAzF5AO7ttun2lUlw_gUYlfizGM-U3POJCIpCqFYCi6-2U2R-CGMjfX19JqGU8s0wfjHh1jpsWDb8WGYKmPm7hW1adpWlkU_yQjhLPsZppFr87fTCdJbYNnz4E-a7lKFjx3dBnfWdhO7dDwx4RPGj6Yvy4jX3A==",
-            partnerId: 198,
-            mediaHitInterval: 2
-          }
-        }
+    config = {
+      "id": 258457,
+      "name": "Big Hero 6",
+      "session": {
+        "partnerId": 198,
+        "ks": "djJ8MTk4fPIz_ugsVrW8JwEX7detBwnuNZq2YVowN9VlB1d8gkHLY1wR6-GaeGYBxD6XBQ6SvDw6crDHhFpvsi7jcudRS2t1bSNFgIT5H2sZrHAGg_uasYXV6YHsm43_d_PsKgmnunAjFniOYXggUo8cT9RtSPo="
+      },
+      "sources": {
+        "progressive": [{
+          "id": "391837,url",
+          "url": "http://api-preprod.ott.kaltura.com/v4_6/api_v3/service/assetFile/action/playManifest/partnerId/198/assetId/258457/assetType/media/assetFileId/391837/contextType/TRAILER/a.mp4",
+          "mimetype": "video/mp4"
+        }],
+        "dash": [],
+        "hls": [{
+          "id": "397008,applehttp",
+          "url": "http://api-preprod.ott.kaltura.com/v4_6/api_v3/service/assetFile/action/playManifest/partnerId/198/assetId/258457/assetType/media/assetFileId/397008/contextType/TRAILER/a.m3u8",
+          "mimetype": "application/x-mpegURL"
+        }]
+      },
+      "duration": 1000,
+      "type": "Unknown",
+      "dvr": false,
+      "metadata": {
+        "0": {"key": "Genre", "value": "Comedy|Action|Adventure|Animation|Family|Editor|"},
+        "1": {"key": "Parental Rating", "value": "G|R|"},
+        "2": {"key": "QUALITY", "value": "hd|sd|"},
+        "3": {"key": "Free", "value": "yes|no|adi|"},
+        "4": {"key": "Source", "value": "Web3|Editor|"},
+        "5": {"key": "Country", "value": ""},
+        "6": {"key": "QUALITY", "value": ""},
+        "7": {"key": "Epg ID", "value": ""},
+        "8": {"key": "Release year", "value": 2012},
+        "9": {"key": "Catchup allowed", "value": false},
+        "description": "*** Free *** The special bond that develops between plus-sized inflatable robot Baymax, and prodigy Hiro Hamada, who team up with a group of friends to form a band of high-tech heroes."
       }
-    }
-  );
+    };
+    config.plugins = {
+      "ottAnalytics": {
+        "entryId": config.id,
+        "fileId": "392026",
+        "ks": config.session.ks,
+        "partnerId": config.session.partnerId,
+        "mediaHitInterval": 2
+      }
+    };
+  });
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
