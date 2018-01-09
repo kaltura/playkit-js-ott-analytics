@@ -1,1 +1,1 @@
-# playkit-js-ott-analytics
+# PlayKit JS OTT Analytics

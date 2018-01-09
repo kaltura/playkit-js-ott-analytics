@@ -18,11 +18,13 @@ if (PROD) {
 
 module.exports = {
   context: __dirname + "/src",
-  entry: {"playkit-ott-analytics": "index.js"},
+  entry: {
+    "playkit-ott-analytics": "index.js"
+  },
   output: {
     path: __dirname + "/dist",
     filename: '[name].js',
-    library: "PlaykitJsOttAnalytics",
+    library: ["playkit", "ottanalytics"],
     libraryTarget: "umd",
     devtoolModuleFilenameTemplate: "./ott-analytics/[resource-path]"
   },
