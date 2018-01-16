@@ -22,7 +22,7 @@ export default class OttAnalytics extends BasePlugin {
    * @static
    */
   static defaultConfig: Object = {
-    serviceUrl: 'http://api-preprod.ott.kaltura.com/v4_6/api_v3',
+    serviceUrl: '//api-preprod.ott.kaltura.com/v4_6/api_v3',
     mediaHitInterval: 30,
     startTime: null
   };
