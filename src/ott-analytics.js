@@ -22,7 +22,6 @@ export default class OttAnalytics extends BasePlugin {
    * @static
    */
   static defaultConfig: Object = {
-    serviceUrl: '//api-preprod.ott.kaltura.com/v4_6/api_v3',
     mediaHitInterval: 30,
     startTime: null
   };
@@ -54,9 +53,13 @@ export default class OttAnalytics extends BasePlugin {
    */
   constructor(name: string, player: Player, config: Object) {
     super(name, player, config);
-    this._initializeMembers();
-    this._registerListeners();
-    this._sendAnalytics(OttAnalyticsEvent.LOAD, this._eventParams);
+    if (this.config.serviceUrl) {
+      this._initializeMembers();
+      this._registerListeners();
+      this._sendAnalytics(OttAnalyticsEvent.LOAD, this._eventParams);
+    } else {
+      this.logger.warn('No service URL provided. Tracking aborted');
+    }
   }
 
   /**
