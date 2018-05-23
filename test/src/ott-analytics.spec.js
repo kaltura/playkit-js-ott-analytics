@@ -29,13 +29,13 @@ describe('OttAnalyticsPlugin', function () {
       "sources": {
         "progressive": [{
           "id": "391837,url",
-          "url": "http://api-preprod.ott.kaltura.com/v4_6/api_v3/service/assetFile/action/playManifest/partnerId/198/assetId/258457/assetType/media/assetFileId/391837/contextType/TRAILER/a.mp4",
+          "url": "http://api-preprod.ott.kaltura.com/v4_7/api_v3/service/assetFile/action/playManifest/partnerId/198/assetId/258457/assetType/media/assetFileId/391837/contextType/TRAILER/a.mp4",
           "mimetype": "video/mp4"
         }],
         "dash": [],
         "hls": [{
           "id": "397008,applehttp",
-          "url": "http://api-preprod.ott.kaltura.com/v4_6/api_v3/service/assetFile/action/playManifest/partnerId/198/assetId/258457/assetType/media/assetFileId/397008/contextType/TRAILER/a.m3u8",
+          "url": "http://api-preprod.ott.kaltura.com/v4_7/api_v3/service/assetFile/action/playManifest/partnerId/198/assetId/258457/assetType/media/assetFileId/397008/contextType/TRAILER/a.m3u8",
           "mimetype": "application/x-mpegURL"
         }]
       },
@@ -70,7 +70,7 @@ describe('OttAnalyticsPlugin', function () {
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
     sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
-    player = loadPlayer(config);
+    config.plugins.ottAnalytics.serviceUrl = "//api-preprod.ott.kaltura.com/v4_7/api_v3";
   });
 
   afterEach(function () {
@@ -79,13 +79,21 @@ describe('OttAnalyticsPlugin', function () {
     TestUtils.removeVideoElementsFromTestPage();
   });
 
+  it('should do nothing if service URL not provided', () => {
+    config.plugins.ottAnalytics.serviceUrl = undefined;
+    player = loadPlayer(config);
+    (!(sendSpy.lastCall)).should.be.true;
+  });
+
   it('should send widget loaded', () => {
+    player = loadPlayer(config);
     const payload = JSON.parse(sendSpy.lastCall.args[0]);
     verifyPayloadProperties(payload.ks, payload.bookmark);
     payload.bookmark.playerData.action.should.equal("LOAD");
   });
 
   it('should send first play', (done) => {
+    player = loadPlayer(config);
     player.addEventListener(player.Event.FIRST_PLAY, () => {
       const payload = JSON.parse(sendSpy.lastCall.args[0]);
       verifyPayloadProperties(payload.ks, payload.bookmark);
@@ -96,6 +104,7 @@ describe('OttAnalyticsPlugin', function () {
   });
 
   it('should send pause', (done) => {
+    player = loadPlayer(config);
     player.addEventListener(player.Event.PAUSE, () => {
       const payload = JSON.parse(sendSpy.lastCall.args[0]);
       verifyPayloadProperties(payload.ks, payload.bookmark);
@@ -109,6 +118,7 @@ describe('OttAnalyticsPlugin', function () {
   });
 
   it('should send ended', (done) => {
+    player = loadPlayer(config);
     player.addEventListener(player.Event.FIRST_PLAY, () => {
       player.currentTime = player.duration - 1;
     });
@@ -122,6 +132,7 @@ describe('OttAnalyticsPlugin', function () {
   });
 
   it('should send media hit', (done) => {
+    player = loadPlayer(config);
     player.addEventListener(player.Event.FIRST_PLAY, () => {
       player.currentTime = player.duration - (player.duration + 1.5);
     });
