@@ -92,7 +92,7 @@ describe('OttAnalyticsPlugin', function () {
     payload.bookmark.playerData.action.should.equal("LOAD");
   });
 
-  it.skip('should send first play', (done) => {
+  it('should send first play', (done) => {
     player = loadPlayer(config);
     player.addEventListener(player.Event.FIRST_PLAY, () => {
       const payload = JSON.parse(sendSpy.lastCall.args[0]);
