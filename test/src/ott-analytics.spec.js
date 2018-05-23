@@ -29,13 +29,13 @@ describe('OttAnalyticsPlugin', function () {
       "sources": {
         "progressive": [{
           "id": "391837,url",
-          "url": "http://api-preprod.ott.kaltura.com/v4_7/api_v3/service/assetFile/action/playManifest/partnerId/198/assetId/258457/assetType/media/assetFileId/391837/contextType/TRAILER/a.mp4",
+          "url": "//api-preprod.ott.kaltura.com/v4_7/api_v3/service/assetFile/action/playManifest/partnerId/198/assetId/258457/assetType/media/assetFileId/391837/contextType/TRAILER/a.mp4",
           "mimetype": "video/mp4"
         }],
         "dash": [],
         "hls": [{
           "id": "397008,applehttp",
-          "url": "http://api-preprod.ott.kaltura.com/v4_7/api_v3/service/assetFile/action/playManifest/partnerId/198/assetId/258457/assetType/media/assetFileId/397008/contextType/TRAILER/a.m3u8",
+          "url": "//api-preprod.ott.kaltura.com/v4_7/api_v3/service/assetFile/action/playManifest/partnerId/198/assetId/258457/assetType/media/assetFileId/397008/contextType/TRAILER/a.m3u8",
           "mimetype": "application/x-mpegURL"
         }]
       },
