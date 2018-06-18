@@ -199,6 +199,9 @@ export default class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   _sendAnalytics(action: string, params: Object): void {
+    if (!this._validate()) {
+      return;
+    }
     const playerData: Object = {
       action: action,
       averageBitrate: 0, totalBitrate: 0,
@@ -223,6 +226,13 @@ export default class OttAnalytics extends BasePlugin {
       });
   }
 
+  _validate(): boolean {
+    if (!this.config.ks) {
+      this._logMissingParam('ks');
+      return false;
+    }
+    return true;
+  }
   /**
    * Starts the media hit interval.
    * @private
