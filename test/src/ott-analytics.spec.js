@@ -202,4 +202,25 @@ describe('OttAnalyticsPlugin', function () {
     player.addEventListener(player.Event.TIME_UPDATE, timeupdateHandler);
     player.play();
   });
+
+  it('should not send media hit if media type is LIVE', (done) => {
+    config.sources.type = "Live";
+    player = loadPlayer(config);
+    const timeupdateHandler = () => {
+      player.pause();
+      let error = null;
+      sendSpy.getCalls().forEach((call) => {
+        const payload = JSON.parse(call.args);
+        try {
+          payload.bookmark.playerData.action.should.not.equal("HIT");
+        } catch (e) {
+          error = e;
+        }
+      });
+      config.sources.type = "Vod";
+      done(error);
+    };
+    setTimeout(timeupdateHandler, 3000);
+    player.play();
+  });
 });

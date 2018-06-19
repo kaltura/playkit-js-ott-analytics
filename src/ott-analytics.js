@@ -251,17 +251,19 @@ export default class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   _startMediaHitInterval(): void {
-    this._clearMediaHitInterval();
-    this._mediaHitInterval = setInterval(() => {
-      if (this._isPlaying) {
-        this._playFromContinue = false;
-        if (this._concurrentFlag || this._eventParams.position === 0) {
-          return;
-        } else {
-          this._sendAnalytics(OttAnalyticsEvent.HIT, this._eventParams);
+    if (!this.player.isLive()) {
+      this._clearMediaHitInterval();
+      this._mediaHitInterval = setInterval(() => {
+        if (this._isPlaying) {
+          this._playFromContinue = false;
+          if (this._concurrentFlag || this._eventParams.position === 0) {
+            return;
+          } else {
+            this._sendAnalytics(OttAnalyticsEvent.HIT, this._eventParams);
+          }
         }
-      }
-    }, this.config.mediaHitInterval * 1000);
+      }, this.config.mediaHitInterval * 1000);
+    }
   }
 
   /**
