@@ -201,7 +201,7 @@ export default class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   _sendAnalytics(action: string, params: Object): void {
-    if (!this._validate(action === OttAnalyticsEvent.HIT)) {
+    if (!this._validate(action)) {
       return;
     }
     const playerData: Object = {
@@ -230,7 +230,8 @@ export default class OttAnalytics extends BasePlugin {
       });
   }
 
-  _validate(isMediaHit: boolean): boolean {
+  _validate(action: string): boolean {
+    const isMediaHit = action === OttAnalyticsEvent.HIT;
     if (isMediaHit && this.config.disableMediaHit) {
       this.logger.info(`block MediaHit report`);
       return false;
