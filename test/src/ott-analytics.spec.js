@@ -20,6 +20,7 @@ describe('OttAnalyticsPlugin', function () {
 
   before(function () {
     config = {
+      "logLevel": "DEBUG",
       "id": 258457,
       "name": "Big Hero 6",
       "session": {
@@ -89,7 +90,7 @@ describe('OttAnalyticsPlugin', function () {
   it('should not send reports for anonymous users', () => {
     config.plugins.ottAnalytics.ks = undefined;
     player = loadPlayer(config);
-    (!(sendSpy.lastCall)).should.be.true;
+    sendSpy.callCount.should.equal(0);
   });
 
   it('should send widget loaded', () => {
