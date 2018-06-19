@@ -23,7 +23,9 @@ export default class OttAnalytics extends BasePlugin {
    */
   static defaultConfig: Object = {
     mediaHitInterval: 30,
-    startTime: null
+    startTime: null,
+    disableMediaHit: false,
+    disableMediaMark: false
   };
 
   /**
@@ -199,13 +201,15 @@ export default class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   _sendAnalytics(action: string, params: Object): void {
-    if (!this._validate()) {
+    if (!this._validate(action === OttAnalyticsEvent.HIT)) {
       return;
     }
     const playerData: Object = {
       action: action,
-      averageBitrate: 0, totalBitrate: 0,
-      currentBitrate: 0, fileId: params.fileId,
+      averageBitrate: 0,
+      totalBitrate: 0,
+      currentBitrate: 0,
+      fileId: params.fileId,
     };
     const bookMark: Object = {
       type: params.mediaType,
@@ -226,7 +230,15 @@ export default class OttAnalytics extends BasePlugin {
       });
   }
 
-  _validate(): boolean {
+  _validate(isMediaHit: boolean): boolean {
+    if (isMediaHit && this.config.disableMediaHit) {
+      this.logger.info(`block MediaHit report`);
+      return false;
+    }
+    if (!isMediaHit && this.config.disableMediaMark) {
+      this.logger.info(`block MediaMark report`);
+      return false;
+    }
     if (!this.config.ks) {
       this._logMissingParam('ks');
       return false;
