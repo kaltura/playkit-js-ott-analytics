@@ -20,6 +20,7 @@ describe('OttAnalyticsPlugin', function () {
 
   before(function () {
     config = {
+      "logLevel": "DEBUG",
       "id": 258457,
       "name": "Big Hero 6",
       "session": {
@@ -37,23 +38,23 @@ describe('OttAnalyticsPlugin', function () {
           "id": "397008,applehttp",
           "url": "//api-preprod.ott.kaltura.com/v4_7/api_v3/service/assetFile/action/playManifest/partnerId/198/assetId/258457/assetType/media/assetFileId/397008/contextType/TRAILER/a.m3u8",
           "mimetype": "application/x-mpegURL"
-        }]
-      },
-      "duration": 1000,
-      "type": "Unknown",
-      "dvr": false,
-      "metadata": {
-        "0": {"key": "Genre", "value": "Comedy|Action|Adventure|Animation|Family|Editor|"},
-        "1": {"key": "Parental Rating", "value": "G|R|"},
-        "2": {"key": "QUALITY", "value": "hd|sd|"},
-        "3": {"key": "Free", "value": "yes|no|adi|"},
-        "4": {"key": "Source", "value": "Web3|Editor|"},
-        "5": {"key": "Country", "value": ""},
-        "6": {"key": "QUALITY", "value": ""},
-        "7": {"key": "Epg ID", "value": ""},
-        "8": {"key": "Release year", "value": 2012},
-        "9": {"key": "Catchup allowed", "value": false},
-        "description": "*** Free *** The special bond that develops between plus-sized inflatable robot Baymax, and prodigy Hiro Hamada, who team up with a group of friends to form a band of high-tech heroes."
+        }],
+        "type": "Vod",
+        "duration": 1000,
+        "dvr": false,
+        "metadata": {
+          "0": {"key": "Genre", "value": "Comedy|Action|Adventure|Animation|Family|Editor|"},
+          "1": {"key": "Parental Rating", "value": "G|R|"},
+          "2": {"key": "QUALITY", "value": "hd|sd|"},
+          "3": {"key": "Free", "value": "yes|no|adi|"},
+          "4": {"key": "Source", "value": "Web3|Editor|"},
+          "5": {"key": "Country", "value": ""},
+          "6": {"key": "QUALITY", "value": ""},
+          "7": {"key": "Epg ID", "value": ""},
+          "8": {"key": "Release year", "value": 2012},
+          "9": {"key": "Catchup allowed", "value": false},
+          "description": "*** Free *** The special bond that develops between plus-sized inflatable robot Baymax, and prodigy Hiro Hamada, who team up with a group of friends to form a band of high-tech heroes."
+        }
       }
     };
     config.plugins = {
@@ -70,6 +71,7 @@ describe('OttAnalyticsPlugin', function () {
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
     sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
+    config.plugins.ottAnalytics.ks = config.session.ks;
     config.plugins.ottAnalytics.serviceUrl = "//api-preprod.ott.kaltura.com/v4_7/api_v3";
   });
 
@@ -83,6 +85,12 @@ describe('OttAnalyticsPlugin', function () {
     config.plugins.ottAnalytics.serviceUrl = undefined;
     player = loadPlayer(config);
     (!(sendSpy.lastCall)).should.be.true;
+  });
+
+  it('should not send reports for anonymous users', () => {
+    config.plugins.ottAnalytics.ks = undefined;
+    player = loadPlayer(config);
+    sendSpy.callCount.should.equal(0);
   });
 
   it('should send widget loaded', () => {
@@ -144,6 +152,75 @@ describe('OttAnalyticsPlugin', function () {
       }
       done();
     });
+    player.play();
+  });
+
+  it('should not send media hit if configured to disable', (done) => {
+    config.plugins.ottAnalytics.disableMediaHit = true;
+    player = loadPlayer(config);
+    const timeupdateHandler = () => {
+      if (player.currentTime > 3) {
+        player.pause();
+        let error = null;
+        sendSpy.getCalls().forEach((call) => {
+          const payload = JSON.parse(call.args);
+          try {
+            payload.bookmark.playerData.action.should.not.equal("HIT");
+          } catch (e) {
+            error = e;
+          }
+        });
+        player.removeEventListener(player.Event.TIME_UPDATE, timeupdateHandler);
+        config.plugins.ottAnalytics.disableMediaHit = false;
+        done(error);
+      }
+    };
+    player.addEventListener(player.Event.TIME_UPDATE, timeupdateHandler);
+    player.play();
+  });
+
+  it('should not send media mark if configured to disable', (done) => {
+    config.plugins.ottAnalytics.disableMediaMark = true;
+    player = loadPlayer(config);
+    const timeupdateHandler = () => {
+      if (player.currentTime > 3) {
+        player.pause();
+        let error = null;
+        sendSpy.getCalls().forEach((call) => {
+          const payload = JSON.parse(call.args);
+          try {
+            payload.bookmark.playerData.action.should.equal("HIT");
+          } catch (e) {
+            error = e;
+          }
+        });
+        player.removeEventListener(player.Event.TIME_UPDATE, timeupdateHandler);
+        config.plugins.ottAnalytics.disableMediaMark = false;
+        done(error);
+      }
+    };
+    player.addEventListener(player.Event.TIME_UPDATE, timeupdateHandler);
+    player.play();
+  });
+
+  it('should not send media hit if media type is LIVE', (done) => {
+    config.sources.type = "Live";
+    player = loadPlayer(config);
+    const timeupdateHandler = () => {
+      player.pause();
+      let error = null;
+      sendSpy.getCalls().forEach((call) => {
+        const payload = JSON.parse(call.args);
+        try {
+          payload.bookmark.playerData.action.should.not.equal("HIT");
+        } catch (e) {
+          error = e;
+        }
+      });
+      config.sources.type = "Vod";
+      done(error);
+    };
+    setTimeout(timeupdateHandler, 3000);
     player.play();
   });
 });
