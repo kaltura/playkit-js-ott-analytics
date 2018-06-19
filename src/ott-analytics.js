@@ -102,7 +102,7 @@ export default class OttAnalytics extends BasePlugin {
       const id = parts[0];
       this._fileId = parseInt(id);
     } catch (e) {
-      this.logger.error(e);
+      this.logger.warn('Unable to parse file ID');
     }
   }
 
@@ -219,7 +219,7 @@ export default class OttAnalytics extends BasePlugin {
           this.logger.debug('Analytics event sent', bookMark);
         }
       }, err => {
-        this.logger.error('Failed to send analytics event', bookMark, err);
+        this.logger.warn('Failed to send analytics event', bookMark, err);
       });
   }
 
