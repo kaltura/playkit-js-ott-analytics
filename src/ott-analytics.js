@@ -58,7 +58,6 @@ export default class OttAnalytics extends BasePlugin {
     if (this.config.serviceUrl) {
       this._initializeMembers();
       this._registerListeners();
-      this._sendAnalytics(OttAnalyticsEvent.LOAD, this._eventParams);
     } else {
       this.logger.warn('No service URL provided. Tracking aborted');
     }
@@ -89,6 +88,7 @@ export default class OttAnalytics extends BasePlugin {
     this.eventManager.listen(this.player, PlayerEvent.VIDEO_TRACK_CHANGED, () => this._onVideoTrackChanged());
     this.eventManager.listen(this.player, PlayerEvent.CHANGE_SOURCE_STARTED, () => this._onChangeSourceStarted());
     this.eventManager.listen(this.player, PlayerEvent.SOURCE_SELECTED, event => this._onSourceSelected(event));
+    this.eventManager.listen(this.player, PlayerEvent.MEDIA_LOADED, () => this._onMediaLoaded());
   }
 
   /**
@@ -106,6 +106,14 @@ export default class OttAnalytics extends BasePlugin {
     } catch (e) {
       this.logger.error(e);
     }
+
+  /**
+   * The media loaded event listener.
+   * @private
+   * @returns {void}
+   */
+  _onMediaLoaded(): void {
+    this._sendAnalytics(OttAnalyticsEvent.LOAD, this._eventParams);
   }
 
   /**

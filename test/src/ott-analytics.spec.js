@@ -93,11 +93,27 @@ describe('OttAnalyticsPlugin', function () {
     sendSpy.callCount.should.equal(0);
   });
 
-  it('should send widget loaded', () => {
+  it('should send media loaded on calling to load method', (done) => {
     player = loadPlayer(config);
-    const payload = JSON.parse(sendSpy.lastCall.args[0]);
-    verifyPayloadProperties(payload.ks, payload.bookmark);
-    payload.bookmark.playerData.action.should.equal("LOAD");
+    player.addEventListener(player.Event.MEDIA_LOADED, () => {
+      const payload = JSON.parse(sendSpy.lastCall.args[0]);
+      verifyPayloadProperties(payload.ks, payload.bookmark);
+      payload.bookmark.playerData.action.should.equal("LOAD");
+      done();
+    });
+    player.load();
+  });
+
+  it('should send media loaded when preload is set to "auto"', (done) => {
+    config.playback = {preload: "auto"};
+    player = loadPlayer(config);
+    player.addEventListener(player.Event.MEDIA_LOADED, () => {
+      const payload = JSON.parse(sendSpy.lastCall.args[0]);
+      verifyPayloadProperties(payload.ks, payload.bookmark);
+      payload.bookmark.playerData.action.should.equal("LOAD");
+      config.playback = {preload: "none"};
+      done();
+    });
   });
 
   it('should send first play', (done) => {
