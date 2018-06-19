@@ -94,6 +94,7 @@ describe('OttAnalyticsPlugin', function () {
   });
 
   it('should send media loaded on calling to load method', (done) => {
+
     player = loadPlayer(config);
     player.addEventListener(player.Event.MEDIA_LOADED, () => {
       const payload = JSON.parse(sendSpy.lastCall.args[0]);
