@@ -244,8 +244,21 @@ export default class OttAnalytics extends BasePlugin {
       this._logMissingParam('ks');
       return false;
     }
+    if (!this.config.entryId) {
+      this._logMissingParam('entryId');
+      return false;
+    }
+    if (!this._fileId) {
+      this._logMissingParam('fileId');
+      return false;
+    }
     return true;
   }
+
+  _logMissingParam(missingParam: string): void {
+    this.logger.warn(`block report because of missing param ${missingParam}`);
+  }
+
   /**
    * Starts the media hit interval.
    * @private
