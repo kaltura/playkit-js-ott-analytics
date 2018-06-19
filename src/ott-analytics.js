@@ -38,14 +38,12 @@ export default class OttAnalytics extends BasePlugin {
     return true;
   }
 
-  _isPlaying: boolean;
-  _concurrentFlag: boolean;
-  _fileId: number;
-  _didFirstPlay: boolean;
-  _mediaHitInterval: number;
-  _continueTime: number;
-  _playFromContinue: boolean;
-  _isPlaying: boolean;
+  _isPlaying: boolean = false;
+  _concurrentFlag: boolean = false;
+  _fileId: number = 0;
+  _didFirstPlay: boolean = false;
+  _mediaHitInterval: ?number = null;
+  _isPlaying: boolean = false;
 
   /**
    * @constructor
@@ -56,7 +54,6 @@ export default class OttAnalytics extends BasePlugin {
   constructor(name: string, player: Player, config: Object) {
     super(name, player, config);
     if (this.config.serviceUrl) {
-      this._initializeMembers();
       this._registerListeners();
     } else {
       this.logger.warn('No service URL provided. Tracking aborted');
@@ -106,6 +103,7 @@ export default class OttAnalytics extends BasePlugin {
     } catch (e) {
       this.logger.error(e);
     }
+  }
 
   /**
    * The media loaded event listener.
@@ -234,7 +232,7 @@ export default class OttAnalytics extends BasePlugin {
           this.logger.debug('Analytics event sent', bookMark);
         }
       }, err => {
-        this.logger.error('Failed to send analytics event', bookMark, err);
+        this.logger.warn('Failed to send analytics event', bookMark, err);
       });
   }
 
@@ -276,7 +274,6 @@ export default class OttAnalytics extends BasePlugin {
       this._clearMediaHitInterval();
       this._mediaHitInterval = setInterval(() => {
         if (this._isPlaying) {
-          this._playFromContinue = false;
           if (this._concurrentFlag || this._eventParams.position === 0) {
             return;
           } else {
@@ -293,28 +290,9 @@ export default class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   _clearMediaHitInterval(): void {
-    clearInterval(this._mediaHitInterval);
-    this._mediaHitInterval = 0;
-  }
-
-  /**
-   * Initializes the class members.
-   * @private
-   * @returns {void}
-   */
-  _initializeMembers(): void {
-    this._isPlaying = false;
-    this._concurrentFlag = false;
-    this._fileId = 0;
-    this._didFirstPlay = false;
-    this._mediaHitInterval = 0;
-    this._isPlaying = false;
-    if (this.config.startTime) {
-      this._continueTime = this.config.startTime;
-      this._playFromContinue = true;
-    } else {
-      this._continueTime = 0;
-      this._playFromContinue = false;
+    if (this._mediaHitInterval) {
+      clearInterval(this._mediaHitInterval);
+      this._mediaHitInterval = null;
     }
   }
 }
