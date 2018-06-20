@@ -24,6 +24,7 @@ export default class OttAnalytics extends BasePlugin {
   static defaultConfig: Object = {
     mediaHitInterval: 30,
     startTime: null,
+    isAnonymous: true,
     disableMediaHit: false,
     disableMediaMark: false
   };
@@ -237,6 +238,18 @@ export default class OttAnalytics extends BasePlugin {
   }
 
   _validate(action: string): boolean {
+    if (!this.config.entryId) {
+      this._logMissingParam('entryId');
+      return false;
+    }
+    if (!this._fileId) {
+      this._logMissingParam('fileId');
+      return false;
+    }
+    if (this.config.isAnonymous) {
+      this.logger.info(`block report for anonymous user`);
+      return false;
+    }
     const isMediaHit = action === OttAnalyticsEvent.HIT;
     if (isMediaHit && this.config.disableMediaHit) {
       this.logger.info(`block MediaHit report`);
@@ -244,18 +257,6 @@ export default class OttAnalytics extends BasePlugin {
     }
     if (!isMediaHit && this.config.disableMediaMark) {
       this.logger.info(`block MediaMark report`);
-      return false;
-    }
-    if (!this.config.ks) {
-      this._logMissingParam('ks');
-      return false;
-    }
-    if (!this.config.entryId) {
-      this._logMissingParam('entryId');
-      return false;
-    }
-    if (!this._fileId) {
-      this._logMissingParam('fileId');
       return false;
     }
     return true;

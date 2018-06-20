@@ -72,6 +72,7 @@ describe('OttAnalyticsPlugin', function () {
     sandbox = sinon.sandbox.create();
     sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
     config.plugins.ottAnalytics.ks = config.session.ks;
+    config.plugins.ottAnalytics.isAnonymous = false;
     config.plugins.ottAnalytics.serviceUrl = "//api-preprod.ott.kaltura.com/v4_7/api_v3";
   });
 
@@ -88,7 +89,7 @@ describe('OttAnalyticsPlugin', function () {
   });
 
   it('should not send reports for anonymous users', () => {
-    config.plugins.ottAnalytics.ks = undefined;
+    config.plugins.ottAnalytics.isAnonymous = true;
     player = loadPlayer(config);
     sendSpy.callCount.should.equal(0);
   });
