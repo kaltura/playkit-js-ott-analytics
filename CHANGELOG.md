@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.1.3"></a>
+## [0.1.3](https://github.com/kaltura/playkit-ott-analytics/compare/v0.1.2...v0.1.3) (2018-06-20)
+
+
+### Bug Fixes
+
+* output logger warning instead of error ([#5](https://github.com/kaltura/playkit-ott-analytics/issues/5)) ([57f9abc](https://github.com/kaltura/playkit-ott-analytics/commit/57f9abc))
+* **FEC-8327:** don't send report if mandatory params are not set ([#7](https://github.com/kaltura/playkit-ott-analytics/issues/7)) ([2bf346a](https://github.com/kaltura/playkit-ott-analytics/commit/2bf346a))
+* **FEC-8328:** send load event only on media loaded ([#8](https://github.com/kaltura/playkit-ott-analytics/issues/8)) ([9eb5d7a](https://github.com/kaltura/playkit-ott-analytics/commit/9eb5d7a))
+
+
+
 <a name="0.1.2"></a>
 ## [0.1.2](https://github.com/kaltura/playkit-ott-analytics/compare/v0.1.1...v0.1.2) (2018-05-26)
 
