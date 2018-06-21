@@ -44,7 +44,7 @@ export default class OttAnalytics extends BasePlugin {
   _fileId: number = 0;
   _didFirstPlay: boolean = false;
   _mediaHitInterval: ?number = null;
-  _isPlaying: boolean = false;
+  _playerDidError: boolean = false;
 
   /**
    * @constructor
@@ -59,6 +59,18 @@ export default class OttAnalytics extends BasePlugin {
     } else {
       this.logger.warn('No service URL provided. Tracking aborted');
     }
+  }
+
+  /**
+   * reset the plugin.
+   * @override
+   * @public
+   * @returns {void}
+   */
+  reset(): void {
+    this._clearMediaHitInterval();
+    this._didFirstPlay = false;
+    this._playerDidError = false;
   }
 
   /**
@@ -85,7 +97,6 @@ export default class OttAnalytics extends BasePlugin {
     this.eventManager.listen(this.player, PlayerEvent.SEEKED, () => this._onSeeked());
     this.eventManager.listen(this.player, PlayerEvent.ERROR, (e) => this._onError(e));
     this.eventManager.listen(this.player, PlayerEvent.VIDEO_TRACK_CHANGED, () => this._onVideoTrackChanged());
-    this.eventManager.listen(this.player, PlayerEvent.CHANGE_SOURCE_STARTED, () => this._onChangeSourceStarted());
     this.eventManager.listen(this.player, PlayerEvent.SOURCE_SELECTED, event => this._onSourceSelected(event));
     this.eventManager.listen(this.player, PlayerEvent.MEDIA_LOADED, () => this._onMediaLoaded());
   }
@@ -159,6 +170,7 @@ export default class OttAnalytics extends BasePlugin {
   _onError(event: FakeEvent): void {
     if (event.payload && event.payload.severity === Error.Severity.CRITICAL) {
       this._isPlaying = false;
+      this._playerDidError = true;
       this._clearMediaHitInterval();
     }
   }
@@ -189,15 +201,6 @@ export default class OttAnalytics extends BasePlugin {
    */
   _onVideoTrackChanged(): void {
     this._sendAnalytics(OttAnalyticsEvent.BITRATE_CHANGE, this._eventParams);
-  }
-
-  /**
-   * Sets _didFirstPlay to false on media change.
-   * @private
-   * @returns {void}
-   */
-  _onChangeSourceStarted(): void {
-    this._didFirstPlay = false;
   }
 
   /**
@@ -252,6 +255,9 @@ export default class OttAnalytics extends BasePlugin {
   }
 
   _validate(action: string): boolean {
+    if (this._playerDidError) {
+      return false;
+    }
     if (!this.config.entryId) {
       this._logMissingParam('entryId');
       return false;
