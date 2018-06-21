@@ -1,5 +1,5 @@
 //@flow
-import {BasePlugin} from 'playkit-js'
+import {BasePlugin, Error, FakeEvent} from 'playkit-js'
 import {OTTBookmarkService, RequestBuilder} from 'playkit-js-providers/dist/playkit-bookmark-service'
 
 type OttAnalyticsEventType = { [event: string]: string };
@@ -83,6 +83,7 @@ export default class OttAnalytics extends BasePlugin {
     this.eventManager.listen(this.player, PlayerEvent.PAUSE, () => this._onPause());
     this.eventManager.listen(this.player, PlayerEvent.ENDED, () => this._onEnded());
     this.eventManager.listen(this.player, PlayerEvent.SEEKED, () => this._onSeeked());
+    this.eventManager.listen(this.player, PlayerEvent.ERROR, (e) => this._onError(e));
     this.eventManager.listen(this.player, PlayerEvent.VIDEO_TRACK_CHANGED, () => this._onVideoTrackChanged());
     this.eventManager.listen(this.player, PlayerEvent.CHANGE_SOURCE_STARTED, () => this._onChangeSourceStarted());
     this.eventManager.listen(this.player, PlayerEvent.SOURCE_SELECTED, event => this._onSourceSelected(event));
@@ -147,6 +148,19 @@ export default class OttAnalytics extends BasePlugin {
     this._isPlaying = false;
     this._clearMediaHitInterval();
     this._sendAnalytics(OttAnalyticsEvent.FINISH, this._eventParams);
+  }
+
+  /**
+   * The error event listener.
+   * @param {FakeEvent} event - player eventgit chec
+   * @private
+   * @returns {void}
+   */
+  _onError(event: FakeEvent): void {
+    if (event.payload && event.payload.severity === Error.Severity.CRITICAL) {
+      this._isPlaying = false;
+      this._clearMediaHitInterval();
+    }
   }
 
   /**
