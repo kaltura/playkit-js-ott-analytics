@@ -24,7 +24,6 @@ export default class OttAnalytics extends BasePlugin {
   static defaultConfig: Object = {
     mediaHitInterval: 30,
     startTime: null,
-    isAnonymous: true,
     disableMediaHit: false,
     disableMediaMark: false
   };
