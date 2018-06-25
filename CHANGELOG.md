@@ -8,7 +8,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* **FEC-8331:** use isAnonymous flag from config instead of ks ([#9](https://github.com/kaltura/playkit-ott-analytics/issues/9)) ([90c72af](https://github.com/kaltura/playkit-ott-analytics/commit/90c72af))
 * **FEC-8349:** OTT analytics - no event send for logged user ([#11](https://github.com/kaltura/playkit-ott-analytics/issues/11)) ([eda23fc](https://github.com/kaltura/playkit-ott-analytics/commit/eda23fc))
 
 
