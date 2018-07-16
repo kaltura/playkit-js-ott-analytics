@@ -1,8 +1,8 @@
 //@flow
-import {BasePlugin} from 'playkit-js'
-import {OTTBookmarkService, RequestBuilder} from 'playkit-js-providers/dist/playkit-bookmark-service'
+import {BasePlugin} from 'playkit-js';
+import {OTTBookmarkService, RequestBuilder} from 'playkit-js-providers/dist/playkit-bookmark-service';
 
-type OttAnalyticsEventType = { [event: string]: string };
+type OttAnalyticsEventType = {[event: string]: string};
 const MEDIA_TYPE = 'MEDIA';
 const CONCURRENT = 'Concurrent';
 const OttAnalyticsEvent: OttAnalyticsEventType = {
@@ -215,7 +215,7 @@ export default class OttAnalytics extends BasePlugin {
       averageBitrate: 0,
       totalBitrate: 0,
       currentBitrate: 0,
-      fileId: params.fileId,
+      fileId: params.fileId
     };
     const bookMark: Object = {
       type: params.mediaType,
@@ -224,16 +224,18 @@ export default class OttAnalytics extends BasePlugin {
       playerData: playerData
     };
     const request: RequestBuilder = OTTBookmarkService.add(this.config.serviceUrl, this.config.ks, bookMark);
-    request.doHttpRequest()
-      .then((data) => {
+    request.doHttpRequest().then(
+      data => {
         if (data === CONCURRENT) {
           this._concurrentFlag = true;
         } else {
           this.logger.debug('Analytics event sent', bookMark);
         }
-      }, err => {
+      },
+      err => {
         this.logger.warn('Failed to send analytics event', bookMark, err);
-      });
+      }
+    );
   }
 
   _validate(action: string): boolean {
