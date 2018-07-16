@@ -1,5 +1,5 @@
 import '../../src/index';
-import {loadPlayer} from 'playkit-js';
+import {loadPlayer, Error, FakeEvent, EventType} from 'playkit-js';
 import * as TestUtils from 'playkit-js/test/src/utils/test-utils';
 
 describe('OttAnalyticsPlugin', function() {
@@ -79,6 +79,7 @@ describe('OttAnalyticsPlugin', function() {
     sandbox = sinon.sandbox.create();
     sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
     config.plugins.ottAnalytics.ks = config.session.ks;
+    config.plugins.ottAnalytics.isAnonymous = false;
     config.plugins.ottAnalytics.serviceUrl = '//api-preprod.ott.kaltura.com/v4_7/api_v3';
   });
 
@@ -95,7 +96,7 @@ describe('OttAnalyticsPlugin', function() {
   });
 
   it('should not send reports for anonymous users', () => {
-    config.plugins.ottAnalytics.ks = undefined;
+    config.plugins.ottAnalytics.isAnonymous = true;
     player = loadPlayer(config);
     sendSpy.callCount.should.equal(0);
   });
@@ -229,7 +230,7 @@ describe('OttAnalyticsPlugin', function() {
   it('should not send media hit if media type is LIVE', done => {
     config.sources.type = 'Live';
     player = loadPlayer(config);
-    const timeupdateHandler = () => {
+    const timeoutHandler = () => {
       player.pause();
       let error = null;
       sendSpy.getCalls().forEach(call => {
@@ -243,7 +244,29 @@ describe('OttAnalyticsPlugin', function() {
       config.sources.type = 'Vod';
       done(error);
     };
-    setTimeout(timeupdateHandler, 3000);
+    setTimeout(timeoutHandler, 3000);
+    player.play();
+  });
+
+  it('should not send media hit/mark after critical player error', done => {
+    player = loadPlayer(config);
+    this.numberOfReprots = 0;
+    const timeoutHandler = () => {
+      const error = new Error(Error.Severity.CRITICAL, Error.Category.PLAYER, Error.Code.RUNTIME_ERROR_METHOD_NOT_IMPLEMENTED, 'static canPlayDrm');
+      player.dispatchEvent(new FakeEvent(EventType.ERROR, error));
+      this.numberOfReprots = sendSpy.getCalls().length;
+      setTimeout(errorTimeoutHandler, 3000);
+    };
+    const errorTimeoutHandler = () => {
+      player.pause();
+      try {
+        sendSpy.getCalls().length.should.equal(this.numberOfReprots);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    };
+    setTimeout(timeoutHandler, 3000);
     player.play();
   });
 });
