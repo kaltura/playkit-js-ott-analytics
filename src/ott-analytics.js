@@ -1,8 +1,8 @@
 //@flow
-import {BasePlugin, Error, FakeEvent} from 'playkit-js'
-import {OTTBookmarkService, RequestBuilder} from 'playkit-js-providers/dist/playkit-bookmark-service'
+import {BasePlugin, Error, FakeEvent} from 'playkit-js';
+import {OTTBookmarkService, RequestBuilder} from 'playkit-js-providers/dist/playkit-bookmark-service';
 
-type OttAnalyticsEventType = { [event: string]: string };
+type OttAnalyticsEventType = {[event: string]: string};
 const MEDIA_TYPE = 'MEDIA';
 const CONCURRENT = 'Concurrent';
 const OttAnalyticsEvent: OttAnalyticsEventType = {
@@ -94,7 +94,7 @@ export default class OttAnalytics extends BasePlugin {
     this.eventManager.listen(this.player, PlayerEvent.PAUSE, () => this._onPause());
     this.eventManager.listen(this.player, PlayerEvent.ENDED, () => this._onEnded());
     this.eventManager.listen(this.player, PlayerEvent.SEEKED, () => this._onSeeked());
-    this.eventManager.listen(this.player, PlayerEvent.ERROR, (e) => this._onError(e));
+    this.eventManager.listen(this.player, PlayerEvent.ERROR, e => this._onError(e));
     this.eventManager.listen(this.player, PlayerEvent.VIDEO_TRACK_CHANGED, () => this._onVideoTrackChanged());
     this.eventManager.listen(this.player, PlayerEvent.SOURCE_SELECTED, event => this._onSourceSelected(event));
     this.eventManager.listen(this.player, PlayerEvent.MEDIA_LOADED, () => this._onMediaLoaded());
@@ -232,7 +232,7 @@ export default class OttAnalytics extends BasePlugin {
       averageBitrate: 0,
       totalBitrate: 0,
       currentBitrate: 0,
-      fileId: params.fileId,
+      fileId: params.fileId
     };
     const bookMark: Object = {
       type: params.mediaType,
@@ -241,16 +241,18 @@ export default class OttAnalytics extends BasePlugin {
       playerData: playerData
     };
     const request: RequestBuilder = OTTBookmarkService.add(this.config.serviceUrl, this.config.ks, bookMark);
-    request.doHttpRequest()
-      .then((data) => {
+    request.doHttpRequest().then(
+      data => {
         if (data === CONCURRENT) {
           this._concurrentFlag = true;
         } else {
           this.logger.debug('Analytics event sent', bookMark);
         }
-      }, err => {
+      },
+      err => {
         this.logger.warn('Failed to send analytics event', bookMark, err);
-      });
+      }
+    );
   }
 
   _validate(action: string): boolean {
