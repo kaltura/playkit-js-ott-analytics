@@ -99,5 +99,8 @@
   "bugs": {
     "url": "https://github.com/kaltura/playkit-ott-analytics/issues"
   },
-  "homepage": "https://github.com/kaltura/playkit-ott-analytics#readme"
+  "homepage": "https://github.com/kaltura/playkit-ott-analytics#readme",
+  "kcc": {
+    "name": "playkit-ott-analytics"
+  }
 }
