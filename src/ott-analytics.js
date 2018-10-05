@@ -243,19 +243,14 @@ export default class OttAnalytics extends BasePlugin {
     const request: RequestBuilder = OTTBookmarkService.add(this.config.serviceUrl, this.config.ks, bookMark);
     request.doHttpRequest().then(
       data => {
-        if (data === CONCURRENT ) {
-          this._concurrentFlag = true;  
-          this.player.dispatchEvent(new FakeEvent('Concurrent Block', data));
-        else {
           var o = JSON.parse(data);
           // Handle this format: {"result": {"error": {"objectType": "KalturaAPIException","code": 4001,"message": "Concurrent play limitation"}}}
-          if (o.result && o.result.error && o.result.error.message.indexof(CONCURRENT) >= 0){  
+          if (o.result && o.result.error && o.result.error.message && o.result.error.message.indexof(CONCURRENT) >= 0){  
             this._concurrentFlag = true;
             this.player.dispatchEvent(new FakeEvent('Concurrent Block', data));
           } else {
             this.logger.debug('Analytics event sent', bookMark);
           }
-        }
       },
       err => {
         this.logger.warn('Failed to send analytics event', bookMark, err);
