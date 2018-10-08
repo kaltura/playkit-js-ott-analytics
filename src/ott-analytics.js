@@ -243,6 +243,7 @@ export default class OttAnalytics extends BasePlugin {
     const request: RequestBuilder = OTTBookmarkService.add(this.config.serviceUrl, this.config.ks, bookMark);
     request.doHttpRequest().then(
       data => {
+        try{
           const o = JSON.parse(data);
           // Handle this format: {"result": {"error": {"objectType": "KalturaAPIException","code": 4001,"message": "Concurrent play limitation"}}}
           if (o.result && o.result.error && o.result.error.code && o.result.error.code === 4001){  
@@ -252,6 +253,9 @@ export default class OttAnalytics extends BasePlugin {
           } else {
             this.logger.debug('Analytics event sent', bookMark);
           }
+        } catch(e){
+          this.logger.debug('Analytics response parsing failed', data);
+        }
       },
       err => {
         this.logger.warn('Failed to send analytics event', bookMark, err);
