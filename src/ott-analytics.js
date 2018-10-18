@@ -243,10 +243,18 @@ export default class OttAnalytics extends BasePlugin {
     const request: RequestBuilder = OTTBookmarkService.add(this.config.serviceUrl, this.config.ks, bookMark);
     request.doHttpRequest().then(
       data => {
-        if (data === CONCURRENT) {
-          this._concurrentFlag = true;
-        } else {
-          this.logger.debug('Analytics event sent', bookMark);
+        try{
+          const o = JSON.parse(data);
+          // Handle this format: {"result": {"error": {"objectType": "KalturaAPIException","code": 4001,"message": "Concurrent play limitation"}}}
+          if (o.result && o.result.error && o.result.error.code && o.result.error.code === 4001){  
+            this._concurrentFlag = true;
+            this.player.dispatchEvent(new FakeEvent('phoenixConcurrentBlock', data));
+            this.logger.debug('Analytics concurrency block returned', o);
+          } else {
+            this.logger.debug('Analytics event sent', bookMark);
+          }
+        } catch(e){
+          this.logger.debug('Analytics response parsing failed', data);
         }
       },
       err => {
@@ -266,6 +274,10 @@ export default class OttAnalytics extends BasePlugin {
     if (!this._fileId) {
       this._logMissingParam('fileId');
       return false;
+    }
+    if (this._concurrentFlag){
+      this.logger.info(`concurreny mode - block analytics`); // block analytics when in concurrency mode
+      return false;    
     }
     if (this.config.isAnonymous) {
       this.logger.info(`block report for anonymous user`);
