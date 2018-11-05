@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/kaltura/playkit-ott-analytics/compare/v0.1.5...v0.3.0) (2018-11-05)
+
+
+### Features
+
+* **FEC-8558:** concurrency handling ([#15](https://github.com/kaltura/playkit-ott-analytics/issues/15)) ([52e0c5b](https://github.com/kaltura/playkit-ott-analytics/commit/52e0c5b))
+* **FEC-8642:** enable experimental live OTT concurency ([#16](https://github.com/kaltura/playkit-ott-analytics/issues/16)) ([079b586](https://github.com/kaltura/playkit-ott-analytics/commit/079b586))
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/kaltura/playkit-ott-analytics/compare/v0.1.5...v0.2.0) (2018-10-18)
 
