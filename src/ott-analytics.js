@@ -24,7 +24,8 @@ export default class OttAnalytics extends BasePlugin {
     mediaHitInterval: 30,
     startTime: null,
     disableMediaHit: false,
-    disableMediaMark: false
+    disableMediaMark: false,
+    experimentalEnableLiveMediaHit: false
   };
 
   /**
@@ -304,12 +305,12 @@ export default class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   _startMediaHitInterval(): void {
-    if (!this.player.isLive()) {
+    if (!this.player.isLive() || this.config.experimentalEnableLiveMediaHit) {
       this._clearMediaHitInterval();
       this._mediaHitInterval = setInterval(() => {
         if (this._isPlaying) {
           if (this._concurrentFlag || this._eventParams.position === 0) {
-            return;
+            this.logger.debug('prevent sending MediaHit');
           } else {
             this._sendAnalytics(OttAnalyticsEvent.HIT, this._eventParams);
           }
