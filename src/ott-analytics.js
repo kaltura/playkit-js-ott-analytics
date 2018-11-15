@@ -244,8 +244,7 @@ export default class OttAnalytics extends BasePlugin {
     request.doHttpRequest().then(
       data => {
         try {
-          
-	// Handle this format: {"result": {"error": {"objectType": "KalturaAPIException","code": 4001,"message": "Concurrent play limitation"}}}
+	        // Handle this format: {"result": {"error": {"objectType": "KalturaAPIException","code": 4001,"message": "Concurrent play limitation"}}}
           if (data.result && data.result.error && data.result.error.code && data.result.error.code === 4001) {
             this._concurrentFlag = true;
             this.player.dispatchEvent(new FakeEvent('phoenixConcurrentBlock', data));
