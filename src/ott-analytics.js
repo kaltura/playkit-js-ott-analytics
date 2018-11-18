@@ -7,6 +7,7 @@ const MEDIA_TYPE = 'MEDIA';
 const OttAnalyticsEvent: OttAnalyticsEventType = {
   LOAD: 'LOAD',
   PLAY: 'PLAY',
+  STOP: 'STOP',
   PAUSE: 'PAUSE',
   FINISH: 'FINISH',
   FIRST_PLAY: 'FIRST_PLAY',
@@ -22,6 +23,7 @@ export default class OttAnalytics extends BasePlugin {
    */
   static defaultConfig: Object = {
     mediaHitInterval: 30,
+    isAnonymous: true,
     startTime: null,
     disableMediaHit: false,
     disableMediaMark: false,
@@ -39,6 +41,7 @@ export default class OttAnalytics extends BasePlugin {
   }
 
   _isPlaying: boolean = false;
+  _isFinished: boolean = false;
   _concurrentFlag: boolean = false;
   _fileId: number = 0;
   _didFirstPlay: boolean = false;
@@ -68,6 +71,11 @@ export default class OttAnalytics extends BasePlugin {
    */
   reset(): void {
     this._clearMediaHitInterval();
+    if (this._isFinished) {
+      this._isFinished = false;
+    } else {
+      this._sendAnalytics(OttAnalyticsEvent.STOP, this._eventParams);
+    }
     this._didFirstPlay = false;
     this._playerDidError = false;
   }
@@ -79,6 +87,7 @@ export default class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   destroy(): void {
+    this.reset();
     this.eventManager.destroy();
   }
 
@@ -156,6 +165,7 @@ export default class OttAnalytics extends BasePlugin {
    */
   _onEnded(): void {
     this._isPlaying = false;
+    this._isFinished = true;
     this._clearMediaHitInterval();
     this._sendAnalytics(OttAnalyticsEvent.FINISH, this._eventParams);
   }
