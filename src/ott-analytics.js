@@ -4,7 +4,7 @@ import {OTTBookmarkService, RequestBuilder} from 'playkit-js-providers/dist/play
 
 type OttAnalyticsEventType = {[event: string]: string};
 const MEDIA_TYPE = 'MEDIA';
-const OttAnalyticsEvent: OttAnalyticsEventType = {
+const BookmarkEvent: OttAnalyticsEventType = {
   LOAD: 'LOAD',
   PLAY: 'PLAY',
   PAUSE: 'PAUSE',
@@ -14,7 +14,14 @@ const OttAnalyticsEvent: OttAnalyticsEventType = {
   HIT: 'HIT'
 };
 
-export default class OttAnalytics extends BasePlugin {
+const BookmarkError = {
+  BOOKMARK_ERROR: 'bookmarkerror',
+  CONCURRENCY_LIMIT: 'concurrencylimit'
+};
+
+const CONCURRENCY_ERROR_CODE: string = '4001';
+
+class OttAnalytics extends BasePlugin {
   /**
    * The default configuration of the plugin.
    * @type {Object}
@@ -39,7 +46,6 @@ export default class OttAnalytics extends BasePlugin {
   }
 
   _isPlaying: boolean = false;
-  _concurrentFlag: boolean = false;
   _fileId: number = 0;
   _didFirstPlay: boolean = false;
   _mediaHitInterval: ?number = null;
@@ -123,7 +129,7 @@ export default class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   _onMediaLoaded(): void {
-    this._sendAnalytics(OttAnalyticsEvent.LOAD, this._eventParams);
+    this._sendAnalytics(BookmarkEvent.LOAD, this._eventParams);
   }
 
   /**
@@ -134,7 +140,7 @@ export default class OttAnalytics extends BasePlugin {
   _onPlay(): void {
     this._isPlaying = true;
     this._startMediaHitInterval();
-    this._sendAnalytics(OttAnalyticsEvent.PLAY, this._eventParams);
+    this._sendAnalytics(BookmarkEvent.PLAY, this._eventParams);
   }
 
   /**
@@ -145,7 +151,7 @@ export default class OttAnalytics extends BasePlugin {
   _onPause(): void {
     this._isPlaying = false;
     if (this._didFirstPlay) {
-      this._sendAnalytics(OttAnalyticsEvent.PAUSE, this._eventParams);
+      this._sendAnalytics(BookmarkEvent.PAUSE, this._eventParams);
     }
   }
 
@@ -157,7 +163,7 @@ export default class OttAnalytics extends BasePlugin {
   _onEnded(): void {
     this._isPlaying = false;
     this._clearMediaHitInterval();
-    this._sendAnalytics(OttAnalyticsEvent.FINISH, this._eventParams);
+    this._sendAnalytics(BookmarkEvent.FINISH, this._eventParams);
   }
 
   /**
@@ -181,7 +187,7 @@ export default class OttAnalytics extends BasePlugin {
    */
   _onFirstPlay(): void {
     this._didFirstPlay = true;
-    this._sendAnalytics(OttAnalyticsEvent.FIRST_PLAY, this._eventParams);
+    this._sendAnalytics(BookmarkEvent.FIRST_PLAY, this._eventParams);
   }
 
   /**
@@ -199,7 +205,7 @@ export default class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   _onVideoTrackChanged(): void {
-    this._sendAnalytics(OttAnalyticsEvent.BITRATE_CHANGE, this._eventParams);
+    this._sendAnalytics(BookmarkEvent.BITRATE_CHANGE, this._eventParams);
   }
 
   /**
@@ -241,25 +247,44 @@ export default class OttAnalytics extends BasePlugin {
       playerData: playerData
     };
     const request: RequestBuilder = OTTBookmarkService.add(this.config.serviceUrl, this.config.ks, bookMark);
+    this.logger.debug('sending bookmark', bookMark);
     request.doHttpRequest().then(
       data => {
-        try {
-          // Handle this format: {"result": {"error": {"objectType": "KalturaAPIException","code": 4001,"message": "Concurrent play limitation"}}}
-          if (data.result && data.result.error && data.result.error.code && data.result.error.code === 4001) {
-            this._concurrentFlag = true;
-            this.player.dispatchEvent(new FakeEvent('phoenixConcurrentBlock', data));
-            this.logger.debug('Analytics concurrency block returned', data);
+        this.logger.debug('bookmark response', data);
+        if (this._resultHasError(data)) {
+          if (this._getErrorCode(data) === CONCURRENCY_ERROR_CODE) {
+            this.player.dispatchEvent(new FakeEvent(BookmarkError.CONCURRENCY_LIMIT, data));
+            this.logger.debug('bookmark concurrency block returned');
           } else {
-            this.logger.debug('Analytics event sent', bookMark);
+            this.player.dispatchEvent(new FakeEvent(BookmarkError.BOOKMARK_ERROR, data));
+            this.logger.debug('bookmark error returned');
           }
-        } catch (e) {
-          this.logger.debug('Analytics response parsing failed', data);
         }
       },
       err => {
         this.logger.warn('Failed to send analytics event', bookMark, err);
       }
     );
+  }
+
+  /**
+   * check if server returned error response
+   * @param {object} data - the server response
+   * @returns {boolean} - if server returned an error object
+   * @private
+   */
+  _resultHasError(data: Object): boolean {
+    return data.result && data.result.error;
+  }
+
+  /**
+   * get the error code from the server response
+   * @param {object} data - the server response
+   * @returns {string} - the error code
+   * @private
+   */
+  _getErrorCode(data: Object): string {
+    return data.result.error.code;
   }
 
   _validate(action: string): boolean {
@@ -274,15 +299,11 @@ export default class OttAnalytics extends BasePlugin {
       this._logMissingParam('fileId');
       return false;
     }
-    if (this._concurrentFlag) {
-      this.logger.info(`concurreny mode - block analytics`); // block analytics when in concurrency mode
-      return false;
-    }
     if (this.config.isAnonymous) {
       this.logger.info(`block report for anonymous user`);
       return false;
     }
-    const isMediaHit = action === OttAnalyticsEvent.HIT;
+    const isMediaHit = action === BookmarkEvent.HIT;
     if (isMediaHit && this.config.disableMediaHit) {
       this.logger.info(`block MediaHit report`);
       return false;
@@ -308,10 +329,10 @@ export default class OttAnalytics extends BasePlugin {
       this._clearMediaHitInterval();
       this._mediaHitInterval = setInterval(() => {
         if (this._isPlaying) {
-          if (this._concurrentFlag || this._eventParams.position === 0) {
+          if (this._eventParams.position === 0) {
             this.logger.debug('prevent sending MediaHit');
           } else {
-            this._sendAnalytics(OttAnalyticsEvent.HIT, this._eventParams);
+            this._sendAnalytics(BookmarkEvent.HIT, this._eventParams);
           }
         }
       }, this.config.mediaHitInterval * 1000);
@@ -330,3 +351,5 @@ export default class OttAnalytics extends BasePlugin {
     }
   }
 }
+
+export {OttAnalytics, BookmarkEvent, BookmarkError};

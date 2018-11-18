@@ -1,6 +1,7 @@
 import '../../src/index';
 import {loadPlayer, Error, FakeEvent, EventType} from 'playkit-js';
 import * as TestUtils from 'playkit-js/test/src/utils/test-utils';
+import {OttAnalytics, BookmarkEvent, BookmarkError} from '../../src/ott-analytics';
 
 describe('OttAnalyticsPlugin', function() {
   let player, sandbox, sendSpy, config;
@@ -268,5 +269,111 @@ describe('OttAnalyticsPlugin', function() {
     };
     setTimeout(timeoutHandler, 3000);
     player.play();
+  });
+});
+
+describe('_sendAnalytics', () => {
+  let config, xhr, requests, ottAnalytics, playerMock, spy;
+  before(() => {
+    xhr = sinon.useFakeXMLHttpRequest();
+    requests = [];
+
+    xhr.onCreate = xhr => {
+      requests.push(xhr);
+    };
+    playerMock = {
+      Event: {},
+      currentTime: () => 0,
+      dispatchEvent: () => {},
+      addEventListener: sinon.spy(),
+      removeEventListener: sinon.spy()
+    };
+    spy = sinon.spy(playerMock, 'dispatchEvent');
+
+    config = {
+      serviceUrl: '123',
+      entryId: '123',
+      isAnonymous: false
+    };
+  });
+
+  beforeEach(function() {
+    ottAnalytics = new OttAnalytics('ottAnalytics', playerMock, config);
+    ottAnalytics._fileId = 123;
+  });
+
+  afterEach(function() {
+    ottAnalytics.destroy();
+    ottAnalytics = null;
+    requests = [];
+    spy.reset();
+  });
+
+  after(() => {
+    spy.restore();
+  });
+
+  it('should not send any event when server respond with result true valid response', done => {
+    const response = {result: true, executionTime: 0};
+    ottAnalytics._sendAnalytics(BookmarkEvent.HIT, ottAnalytics._eventParams);
+    requests[0].respond(200, {'Content-Type': 'application/json'}, JSON.stringify(response));
+    setTimeout(() => {
+      try {
+        playerMock.dispatchEvent.should.have.not.been.called;
+        done();
+      } catch (e) {
+        done(e);
+      }
+    }, 0);
+  });
+
+  it('should send bookmark error event when server respond with an error', done => {
+    const response = {
+      executionTime: 0.0213399,
+      result: {
+        error: {
+          code: '1',
+          message: 'Error',
+          objectType: 'KalturaAPIException'
+        }
+      }
+    };
+    ottAnalytics._sendAnalytics(BookmarkEvent.HIT, ottAnalytics._eventParams);
+    requests[0].respond(200, {'Content-Type': 'application/json'}, JSON.stringify(response));
+    setTimeout(() => {
+      try {
+        playerMock.dispatchEvent.should.have.been.calledOnce;
+        const error = playerMock.dispatchEvent.args[0][0];
+        error.type.should.equal(BookmarkError.BOOKMARK_ERROR);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    }, 0);
+  });
+
+  it('should send bookmark concurrency event when server respond with concurrency error', done => {
+    const response = {
+      executionTime: 0.0213399,
+      result: {
+        error: {
+          code: '4001',
+          message: 'Concurrent play limitation',
+          objectType: 'KalturaAPIException'
+        }
+      }
+    };
+    ottAnalytics._sendAnalytics(BookmarkEvent.HIT, ottAnalytics._eventParams);
+    requests[0].respond(200, {'Content-Type': 'application/json'}, JSON.stringify(response));
+    setTimeout(() => {
+      try {
+        playerMock.dispatchEvent.should.have.been.calledOnce;
+        const error = playerMock.dispatchEvent.args[0][0];
+        error.type.should.equal(BookmarkError.CONCURRENCY_LIMIT);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    }, 0);
   });
 });
