@@ -286,7 +286,8 @@ describe('_sendAnalytics', () => {
       currentTime: () => 0,
       dispatchEvent: () => {},
       addEventListener: sinon.spy(),
-      removeEventListener: sinon.spy()
+      removeEventListener: sinon.spy(),
+      isLive: () => false
     };
     spy = sinon.spy(playerMock, 'dispatchEvent');
 
@@ -375,5 +376,114 @@ describe('_sendAnalytics', () => {
         done(e);
       }
     }, 0);
+  });
+});
+
+describe('STOP event', () => {
+  let config, xhr, requests, ottAnalytics, playerMock, spy;
+  before(() => {
+    xhr = sinon.useFakeXMLHttpRequest();
+    requests = [];
+
+    xhr.onCreate = xhr => {
+      requests.push(xhr);
+    };
+    playerMock = {
+      Event: {},
+      currentTime: 0,
+      dispatchEvent: () => {},
+      addEventListener: sinon.spy(),
+      removeEventListener: sinon.spy(),
+      isLive: () => false
+    };
+    spy = sinon.spy(playerMock, 'dispatchEvent');
+
+    config = {
+      serviceUrl: '123',
+      entryId: '123',
+      isAnonymous: false
+    };
+  });
+
+  beforeEach(function() {
+    ottAnalytics = new OttAnalytics('ottAnalytics', playerMock, config);
+    ottAnalytics._fileId = 123;
+  });
+
+  afterEach(function() {
+    ottAnalytics.destroy();
+    ottAnalytics = null;
+    requests = [];
+    spy.reset();
+  });
+
+  after(() => {
+    spy.restore();
+  });
+
+  it('should be called if player was reset before media ended', () => {
+    spy = sinon.spy(ottAnalytics, '_sendAnalytics');
+    ottAnalytics._onMediaLoaded();
+    ottAnalytics._onFirstPlay();
+    ottAnalytics._onPlay();
+    ottAnalytics.reset();
+    spy.args[3][0].should.equal('STOP');
+  });
+
+  it('should be called if player was destroyed before media ended', () => {
+    spy = sinon.spy(ottAnalytics, '_sendAnalytics');
+    ottAnalytics._onMediaLoaded();
+    ottAnalytics._onFirstPlay();
+    ottAnalytics._onPlay();
+    ottAnalytics.destroy();
+    spy.should.have.been.calledWithMatch('STOP', sinon.match.object);
+  });
+
+  it('should be called only once if player was reset and then destroyed before media ended', () => {
+    spy = sinon.spy(ottAnalytics, '_sendAnalytics');
+    ottAnalytics._onMediaLoaded();
+    ottAnalytics._onFirstPlay();
+    ottAnalytics._onPlay();
+    ottAnalytics.reset();
+    ottAnalytics.destroy();
+    spy.should.have.callCount(4);
+    spy.should.have.been.calledWithMatch('STOP', sinon.match.object);
+  });
+
+  it('should not be called on reset if media has ended', () => {
+    spy = sinon.spy(ottAnalytics, '_sendAnalytics');
+    ottAnalytics._onMediaLoaded();
+    ottAnalytics._onFirstPlay();
+    ottAnalytics._onPlay();
+    ottAnalytics._onEnded();
+    ottAnalytics.reset();
+    spy.should.have.callCount(4);
+    spy.should.have.not.been.calledWithMatch('STOP', sinon.match.object);
+  });
+
+  it('should not be called on destroy if media has ended', () => {
+    spy = sinon.spy(ottAnalytics, '_sendAnalytics');
+    ottAnalytics._onMediaLoaded();
+    ottAnalytics._onFirstPlay();
+    ottAnalytics._onPlay();
+    ottAnalytics._onEnded();
+    ottAnalytics.destroy();
+    spy.should.have.callCount(4);
+    spy.should.have.not.been.calledWithMatch('STOP', sinon.match.object);
+  });
+
+  it('should be able to stop a media again after change media or replay', () => {
+    spy = sinon.spy(ottAnalytics, '_sendAnalytics');
+    ottAnalytics._onMediaLoaded();
+    ottAnalytics._onFirstPlay();
+    ottAnalytics._onPlay();
+    ottAnalytics.reset();
+    ottAnalytics._onPlay();
+    ottAnalytics.reset();
+    spy.should.have.callCount(6);
+    const firstReset = spy.getCall(3);
+    const secondReset = spy.getCall(5);
+    firstReset.args[0].should.equal('STOP');
+    secondReset.args[0].should.equal('STOP');
   });
 });
