@@ -254,10 +254,10 @@ class OttAnalytics extends BasePlugin {
         if (this._resultHasError(data)) {
           if (this._getErrorCode(data) === CONCURRENCY_ERROR_CODE) {
             this.player.dispatchEvent(new FakeEvent(BookmarkError.CONCURRENCY_LIMIT, data));
-            this.logger.debug('bookmark concurrency block returned');
+            this.logger.warn('bookmark concurrency block returned');
           } else {
             this.player.dispatchEvent(new FakeEvent(BookmarkError.BOOKMARK_ERROR, data));
-            this.logger.debug('bookmark error returned');
+            this.logger.warn('bookmark error returned');
           }
         }
       },
