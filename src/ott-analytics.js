@@ -274,7 +274,7 @@ class OttAnalytics extends BasePlugin {
    * @private
    */
   _resultHasError(data: Object): boolean {
-    return data.result && data.result.error;
+    return !!(data.result && data.result.error);
   }
 
   /**
