@@ -42,6 +42,7 @@ export default class OttAnalytics extends BasePlugin {
 
   _isPlaying: boolean = false;
   _isFinished: boolean = false;
+  _isStopped: boolean = false;
   _concurrentFlag: boolean = false;
   _fileId: number = 0;
   _didFirstPlay: boolean = false;
@@ -71,11 +72,7 @@ export default class OttAnalytics extends BasePlugin {
    */
   reset(): void {
     this._clearMediaHitInterval();
-    if (this._isFinished) {
-      this._isFinished = false;
-    } else {
-      this._sendAnalytics(OttAnalyticsEvent.STOP, this._eventParams);
-    }
+    this._maybeSendStop();
     this._didFirstPlay = false;
     this._playerDidError = false;
   }
@@ -87,8 +84,15 @@ export default class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   destroy(): void {
-    this.reset();
+    this._maybeSendStop();
     this.eventManager.destroy();
+  }
+
+  _maybeSendStop() {
+    if (!(this._isFinished || this._isStopped)) {
+      this._isStopped = true;
+      this._sendAnalytics(OttAnalyticsEvent.STOP, this._eventParams);
+    }
   }
 
   /**
@@ -142,6 +146,8 @@ export default class OttAnalytics extends BasePlugin {
    */
   _onPlay(): void {
     this._isPlaying = true;
+    this._isStopped = false;
+    this._isFinished = false;
     this._startMediaHitInterval();
     this._sendAnalytics(OttAnalyticsEvent.PLAY, this._eventParams);
   }
