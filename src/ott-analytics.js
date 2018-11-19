@@ -7,6 +7,7 @@ const MEDIA_TYPE = 'MEDIA';
 const BookmarkEvent: OttAnalyticsEventType = {
   LOAD: 'LOAD',
   PLAY: 'PLAY',
+  STOP: 'STOP',
   PAUSE: 'PAUSE',
   FINISH: 'FINISH',
   FIRST_PLAY: 'FIRST_PLAY',
@@ -29,6 +30,7 @@ class OttAnalytics extends BasePlugin {
    */
   static defaultConfig: Object = {
     mediaHitInterval: 30,
+    isAnonymous: true,
     startTime: null,
     disableMediaHit: false,
     disableMediaMark: false,
@@ -46,6 +48,8 @@ class OttAnalytics extends BasePlugin {
   }
 
   _isPlaying: boolean = false;
+  _isFinished: boolean = false;
+  _isStopped: boolean = false;
   _fileId: number = 0;
   _didFirstPlay: boolean = false;
   _mediaHitInterval: ?number = null;
@@ -74,6 +78,7 @@ class OttAnalytics extends BasePlugin {
    */
   reset(): void {
     this._clearMediaHitInterval();
+    this._maybeSendStop();
     this._didFirstPlay = false;
     this._playerDidError = false;
   }
@@ -85,7 +90,15 @@ class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   destroy(): void {
+    this._maybeSendStop();
     this.eventManager.destroy();
+  }
+
+  _maybeSendStop() {
+    if (!(this._isFinished || this._isStopped)) {
+      this._isStopped = true;
+      this._sendAnalytics(BookmarkEvent.STOP, this._eventParams);
+    }
   }
 
   /**
@@ -139,6 +152,8 @@ class OttAnalytics extends BasePlugin {
    */
   _onPlay(): void {
     this._isPlaying = true;
+    this._isStopped = false;
+    this._isFinished = false;
     this._startMediaHitInterval();
     this._sendAnalytics(BookmarkEvent.PLAY, this._eventParams);
   }
@@ -162,6 +177,7 @@ class OttAnalytics extends BasePlugin {
    */
   _onEnded(): void {
     this._isPlaying = false;
+    this._isFinished = true;
     this._clearMediaHitInterval();
     this._sendAnalytics(BookmarkEvent.FINISH, this._eventParams);
   }
