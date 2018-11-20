@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.0"></a>
+# [0.5.0](https://github.com/kaltura/playkit-ott-analytics/compare/v0.4.0...v0.5.0) (2018-11-20)
+
+
+### Features
+
+* **FEC-8695:** add STOP bookmark event ([#19](https://github.com/kaltura/playkit-ott-analytics/issues/19)) ([085a40e](https://github.com/kaltura/playkit-ott-analytics/commit/085a40e))
+
+
+
 <a name="0.4.0"></a>
 # [0.4.0](https://github.com/kaltura/playkit-ott-analytics/compare/v0.3.1...v0.4.0) (2018-11-19)
 
