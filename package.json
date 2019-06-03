@@ -67,7 +67,6 @@
     "mocha": "^3.2.0",
     "mocha-cli": "^1.0.1",
     "playkit-js": "https://github.com/kaltura/playkit-js.git#v0.30.3",
-    "playkit-js-providers": "https://github.com/kaltura/playkit-js-providers.git#v2.3.2",
     "prettier": "^1.13.7",
     "sinon": "^2.0.0",
     "sinon-chai": "^2.8.0",
@@ -77,8 +76,7 @@
     "webpack-dev-server": "latest"
   },
   "peerDependencies": {
-    "playkit-js": "https://github.com/kaltura/playkit-js.git#v0.30.3",
-    "playkit-js-providers": "https://github.com/kaltura/playkit-js-providers.git#v2.3.2"
+    "playkit-js": "https://github.com/kaltura/playkit-js.git#v0.30.3"
   },
   "keywords": [
     "kaltura",
@@ -102,5 +100,8 @@
   "homepage": "https://github.com/kaltura/playkit-ott-analytics#readme",
   "kcc": {
     "name": "playkit-ott-analytics"
+  },
+  "dependencies": {
+    "@playkit-js/ott-provider": "^1.0.0"
   }
 }

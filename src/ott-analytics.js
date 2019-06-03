@@ -1,6 +1,6 @@
 //@flow
 import {BasePlugin, Error, FakeEvent} from 'playkit-js';
-import {OTTBookmarkService, RequestBuilder} from 'playkit-js-providers/dist/playkit-bookmark-service';
+import {OTTBookmarkService, RequestBuilder} from '@playkit-js/ott-provider/dist/services/bookmark';
 
 type OttAnalyticsEventType = {[event: string]: string};
 const MEDIA_TYPE = 'MEDIA';
