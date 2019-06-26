@@ -1,6 +1,5 @@
 import '../../src/index';
-import {loadPlayer, Error, FakeEvent, EventType} from 'playkit-js';
-import * as TestUtils from 'playkit-js/test/src/utils/test-utils';
+import {loadPlayer, Error, FakeEvent, EventType} from '@playkit-js/playkit-js';
 import {OttAnalytics, BookmarkEvent, BookmarkError} from '../../src/ott-analytics';
 
 describe('OttAnalyticsPlugin', function() {
@@ -77,7 +76,7 @@ describe('OttAnalyticsPlugin', function() {
   });
 
   beforeEach(function() {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
     sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
     config.plugins.ottAnalytics.ks = config.session.ks;
     config.plugins.ottAnalytics.isAnonymous = false;
@@ -87,7 +86,7 @@ describe('OttAnalyticsPlugin', function() {
   afterEach(function() {
     sandbox.restore();
     player.destroy();
-    TestUtils.removeVideoElementsFromTestPage();
+    removeVideoElementsFromTestPage();
   });
 
   it('should do nothing if service URL not provided', () => {
@@ -105,10 +104,14 @@ describe('OttAnalyticsPlugin', function() {
   it('should send media loaded on calling to load method', done => {
     player = loadPlayer(config);
     player.addEventListener(player.Event.MEDIA_LOADED, () => {
-      const payload = JSON.parse(sendSpy.lastCall.args[0]);
-      verifyPayloadProperties(payload.ks, payload.bookmark);
-      payload.bookmark.playerData.action.should.equal('LOAD');
-      done();
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('LOAD');
+        done();
+      } catch (e) {
+        done(e);
+      }
     });
     player.load();
   });
@@ -117,21 +120,29 @@ describe('OttAnalyticsPlugin', function() {
     config.playback = {preload: 'auto'};
     player = loadPlayer(config);
     player.addEventListener(player.Event.MEDIA_LOADED, () => {
-      const payload = JSON.parse(sendSpy.lastCall.args[0]);
-      verifyPayloadProperties(payload.ks, payload.bookmark);
-      payload.bookmark.playerData.action.should.equal('LOAD');
-      config.playback = {preload: 'none'};
-      done();
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('LOAD');
+        config.playback = {preload: 'none'};
+        done();
+      } catch (e) {
+        done(e);
+      }
     });
   });
 
   it('should send first play', done => {
     player = loadPlayer(config);
     player.addEventListener(player.Event.FIRST_PLAY, () => {
-      const payload = JSON.parse(sendSpy.lastCall.args[0]);
-      verifyPayloadProperties(payload.ks, payload.bookmark);
-      payload.bookmark.playerData.action.should.equal('FIRST_PLAY');
-      done();
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('FIRST_PLAY');
+        done();
+      } catch (e) {
+        done(e);
+      }
     });
     player.play();
   });
@@ -139,10 +150,14 @@ describe('OttAnalyticsPlugin', function() {
   it('should send pause', done => {
     player = loadPlayer(config);
     player.addEventListener(player.Event.PAUSE, () => {
-      const payload = JSON.parse(sendSpy.lastCall.args[0]);
-      verifyPayloadProperties(payload.ks, payload.bookmark);
-      payload.bookmark.playerData.action.should.equal('PAUSE');
-      done();
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('PAUSE');
+        done();
+      } catch (e) {
+        done(e);
+      }
     });
     player.play();
     setTimeout(function() {
@@ -156,10 +171,14 @@ describe('OttAnalyticsPlugin', function() {
       player.currentTime = player.duration - 1;
     });
     player.addEventListener(player.Event.ENDED, () => {
-      const payload = JSON.parse(sendSpy.lastCall.args[0]);
-      verifyPayloadProperties(payload.ks, payload.bookmark);
-      payload.bookmark.playerData.action.should.equal('FINISH');
-      done();
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('FINISH');
+        done();
+      } catch (e) {
+        done(e);
+      }
     });
     player.play();
   });
@@ -307,7 +326,7 @@ describe('_sendAnalytics', () => {
     ottAnalytics.destroy();
     ottAnalytics = null;
     requests = [];
-    spy.reset();
+    spy.resetHistory();
   });
 
   after(() => {
@@ -414,7 +433,7 @@ describe('STOP event', () => {
     ottAnalytics.destroy();
     ottAnalytics = null;
     requests = [];
-    spy.reset();
+    spy.resetHistory();
   });
 
   after(() => {
@@ -487,3 +506,14 @@ describe('STOP event', () => {
     secondReset.args[0].should.equal('STOP');
   });
 });
+
+/**
+ * Removes all the video elements that created by the test from the document.
+ * @returns {void}
+ */
+function removeVideoElementsFromTestPage() {
+  let element = document.getElementsByTagName('video');
+  for (let i = element.length - 1; i >= 0; i--) {
+    element[i].parentNode.removeChild(element[i]);
+  }
+}

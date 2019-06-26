@@ -2,7 +2,6 @@
 
 const webpack = require('webpack');
 const path = require('path');
-const PROD = process.env.NODE_ENV === 'production';
 const packageData = require('./package.json');
 
 let plugins = [
@@ -12,9 +11,6 @@ let plugins = [
   })
 ];
 
-if (PROD) {
-  plugins.push(new webpack.optimize.UglifyJsPlugin({sourceMap: true}));
-}
 
 module.exports = {
   context: __dirname + '/src',
@@ -24,39 +20,19 @@ module.exports = {
   output: {
     path: __dirname + '/dist',
     filename: '[name].js',
-    library: ['playkit', 'ottanalytics'],
+    library: ['playkit', 'plugins', 'ottanalytics'],
     libraryTarget: 'umd',
-    devtoolModuleFilenameTemplate: './ott-analytics/[resource-path]'
+    umdNamedDefine: true,
+    devtoolModuleFilenameTemplate: './plugins/ott-analytics/[resource-path]'
   },
   devtool: 'source-map',
   plugins: plugins,
   module: {
-    rules: [
-      {
-        test: /\.js$/,
-        use: [
-          {
-            loader: 'babel-loader'
-          }
-        ],
-        exclude: [/node_modules/]
-      },
-      {
-        test: /\.js$/,
-        exclude: [/node_modules/],
-        enforce: 'pre',
-        use: [
-          {
-            loader: 'eslint-loader',
-            options: {
-              rules: {
-                semi: 0
-              }
-            }
-          }
-        ]
-      }
-    ]
+    rules: [{
+      test: /\.js$/,
+      exclude: /node_modules/,
+      use: ['babel-loader', 'source-map-loader', 'eslint-loader']
+    }]
   },
   devServer: {
     contentBase: __dirname + '/src'
@@ -65,17 +41,11 @@ module.exports = {
     modules: [path.resolve(__dirname, 'src'), 'node_modules']
   },
   externals: {
-    'playkit-js': {
-      commonjs: 'playkit-js',
-      commonjs2: 'playkit-js',
+    '@playkit-js/playkit-js': {
+      commonjs: '@playkit-js/playkit-js',
+      commonjs2: '@playkit-js/playkit-js',
       amd: 'playkit-js',
       root: ['playkit', 'core']
-    },
-    'playkit-js-providers': {
-      commonjs: 'playkit-js-providers',
-      commonjs2: 'playkit-js-providers',
-      amd: 'playkit-js-providers',
-      root: ['playkit', 'providers']
     }
   }
 };

@@ -14,12 +14,20 @@ const customLaunchers = {
   }
 };
 
-module.exports = function(config) {
+const launchers = {
+  Chrome_browser: {
+    base: 'Chrome',
+    flags: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required']
+  }
+};
+
+module.exports = function (config) {
   let karmaConf = {
     logLevel: config.LOG_INFO,
-    browserDisconnectTimeout: 60000,
-    browserNoActivityTimeout: 60000,
-    browsers: ['Chrome', 'Firefox'],
+    browserDisconnectTimeout: 230000,
+    browserNoActivityTimeout: 260000,
+    customLaunchers: launchers,
+    browsers: ['Chrome_browser'],
     concurrency: 1,
     singleRun: true,
     colors: true,
