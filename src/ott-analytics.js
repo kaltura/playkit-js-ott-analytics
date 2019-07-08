@@ -91,6 +91,7 @@ class OttAnalytics extends BasePlugin {
    */
   destroy(): void {
     this._maybeSendStop();
+    this._clearMediaHitInterval();
     this.eventManager.destroy();
   }
 
