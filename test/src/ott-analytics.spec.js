@@ -294,7 +294,8 @@ describe('_sendAnalytics', () => {
     config = {
       serviceUrl: '123',
       entryId: '123',
-      isAnonymous: false
+      isAnonymous: false,
+      mediaHitInterval: 2
     };
   });
 
@@ -312,6 +313,24 @@ describe('_sendAnalytics', () => {
 
   after(() => {
     spy.restore();
+  });
+
+  it('should stop sending requests after destroy', done => {
+    let numberOfCalls;
+    const checkStopWorking = () => {
+      spy.callCount.should.equal(numberOfCalls);
+      done();
+    };
+    const destroyPlugin = () => {
+      ottAnalytics.destroy();
+      numberOfCalls = spy.callCount;
+      setTimeout(checkStopWorking, config.mediaHitInterval * 2000);
+    };
+    spy = sinon.spy(ottAnalytics, '_sendAnalytics');
+    ottAnalytics._onMediaLoaded();
+    ottAnalytics._onFirstPlay();
+    ottAnalytics._onPlay();
+    setTimeout(destroyPlugin, 1000);
   });
 
   it('should not send any event when server respond with result true valid response', done => {
