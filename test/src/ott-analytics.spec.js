@@ -333,6 +333,22 @@ describe('_sendAnalytics', () => {
     setTimeout(destroyPlugin, 1000);
   });
 
+  it('Interval should be null after reset', () => {
+    ottAnalytics._onMediaLoaded();
+    ottAnalytics._onFirstPlay();
+    ottAnalytics._onPlay();
+    ottAnalytics.reset();
+    (ottAnalytics._mediaHitInterval === null).should.be.true;
+  });
+
+  it('Interval should be null after reset', () => {
+    ottAnalytics._onMediaLoaded();
+    ottAnalytics._onFirstPlay();
+    ottAnalytics._onPlay();
+    ottAnalytics.destroy();
+    (ottAnalytics._mediaHitInterval === null).should.be.true;
+  });
+
   it('should not send any event when server respond with result true valid response', done => {
     const response = {result: true, executionTime: 0};
     ottAnalytics._sendAnalytics(BookmarkEvent.HIT, ottAnalytics._eventParams);
