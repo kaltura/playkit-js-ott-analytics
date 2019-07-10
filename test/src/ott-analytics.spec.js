@@ -315,38 +315,60 @@ describe('_sendAnalytics', () => {
     spy.restore();
   });
 
-  it('should stop sending requests after destroy', done => {
-    let numberOfCalls;
+  it('should stop sending requests after destroy and clear interval', done => {
+    let numberOfCalls, ottAnalyticsSpy;
     const checkStopWorking = () => {
-      spy.callCount.should.equal(numberOfCalls);
-      done();
+      try {
+        ottAnalyticsSpy.callCount.should.equal(numberOfCalls);
+        done();
+      } catch (err) {
+        done(err);
+      }
     };
     const destroyPlugin = () => {
       ottAnalytics.destroy();
-      numberOfCalls = spy.callCount;
-      setTimeout(checkStopWorking, config.mediaHitInterval * 2000);
+      try {
+        (ottAnalytics._mediaHitInterval === null).should.be.true;
+        numberOfCalls = ottAnalyticsSpy.callCount;
+        //interval in ottAnalytics is config.mediaHitInterval * 1000 so I waited to make sure it's not timing issue
+        setTimeout(checkStopWorking, config.mediaHitInterval * 2000);
+      } catch (err) {
+        done(err);
+      }
     };
-    spy = sinon.spy(ottAnalytics, '_sendAnalytics');
+    ottAnalyticsSpy = sinon.spy(ottAnalytics, '_sendAnalytics');
     ottAnalytics._onMediaLoaded();
     ottAnalytics._onFirstPlay();
     ottAnalytics._onPlay();
     setTimeout(destroyPlugin, 1000);
   });
 
-  it('Interval should be null after reset', () => {
+  it('should stop sending requests after reset and clear interval', done => {
+    let numberOfCalls, ottAnalyticsSpy;
+    const checkStopWorking = () => {
+      try {
+        ottAnalyticsSpy.callCount.should.equal(numberOfCalls);
+        done();
+      } catch (err) {
+        done(err);
+      }
+    };
+    const resetPlugin = () => {
+      ottAnalytics.reset();
+      try {
+        (ottAnalytics._mediaHitInterval === null).should.be.true;
+        numberOfCalls = ottAnalyticsSpy.callCount;
+        //interval in ottAnalytics is config.mediaHitInterval * 1000 so I waited to make sure it's not timing issue
+        setTimeout(checkStopWorking, config.mediaHitInterval * 2000);
+      } catch (err) {
+        done(err);
+      }
+    };
+    ottAnalyticsSpy = sinon.spy(ottAnalytics, '_sendAnalytics');
     ottAnalytics._onMediaLoaded();
     ottAnalytics._onFirstPlay();
     ottAnalytics._onPlay();
-    ottAnalytics.reset();
-    (ottAnalytics._mediaHitInterval === null).should.be.true;
-  });
-
-  it('Interval should be null after reset', () => {
-    ottAnalytics._onMediaLoaded();
-    ottAnalytics._onFirstPlay();
-    ottAnalytics._onPlay();
-    ottAnalytics.destroy();
-    (ottAnalytics._mediaHitInterval === null).should.be.true;
+    setTimeout(resetPlugin, 1000);
   });
 
   it('should not send any event when server respond with result true valid response', done => {
