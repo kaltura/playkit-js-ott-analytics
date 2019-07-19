@@ -1,6 +1,6 @@
 {
   "name": "@playkit-js/playkit-js-ott-analytics",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "",
   "main": "dist/playkit-ott-analytics.js",
   "scripts": {
