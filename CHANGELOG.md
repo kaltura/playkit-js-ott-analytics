@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.1"></a>
+## [0.5.1](https://github.com/kaltura/playkit-ott-analytics/compare/v0.5.0...v0.5.1) (2019-07-19)
+
+
+### Bug Fixes
+
+* **FEC-9230:** interval wasn't cleared on destroy ([#20](https://github.com/kaltura/playkit-ott-analytics/issues/20)) ([4f11384](https://github.com/kaltura/playkit-ott-analytics/commit/4f11384))
+
+
+
 <a name="0.5.0"></a>
 # [0.5.0](https://github.com/kaltura/playkit-ott-analytics/compare/v0.4.0...v0.5.0) (2018-11-20)
 
