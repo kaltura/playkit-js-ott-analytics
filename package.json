@@ -30,7 +30,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@playkit-js/ott-provider": "^1.0.0",
+    "@playkit-js/ott-provider": "^1.1.0",
     "@playkit-js/playkit-js": "^0.48.0"
   },
   "devDependencies": {
