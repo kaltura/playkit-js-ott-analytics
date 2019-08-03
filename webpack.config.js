@@ -23,7 +23,7 @@ module.exports = {
     library: ['playkit', 'plugins', 'ottanalytics'],
     libraryTarget: 'umd',
     umdNamedDefine: true,
-    devtoolModuleFilenameTemplate: './plugins/ott-analytics/[resource-path]'
+    devtoolModuleFilenameTemplate: './playkit/plugins/ott-analytics/[resource-path]'
   },
   devtool: 'source-map',
   plugins: plugins,
