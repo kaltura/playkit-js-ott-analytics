@@ -47,10 +47,10 @@ describe('OttAnalyticsPlugin', function() {
           }
         ],
         type: 'Vod',
-        mediaType: 'media test',
         duration: 1000,
         dvr: false,
         metadata: {
+          mediaType: 'media test',
           '0': {key: 'Genre', value: 'Comedy|Action|Adventure|Animation|Family|Editor|'},
           '1': {key: 'Parental Rating', value: 'G|R|'},
           '2': {key: 'QUALITY', value: 'hd|sd|'},
