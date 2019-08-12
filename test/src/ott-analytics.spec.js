@@ -47,6 +47,7 @@ describe('OttAnalyticsPlugin', function() {
           }
         ],
         type: 'Vod',
+        mediaType: 'media test',
         duration: 1000,
         dvr: false,
         metadata: {
@@ -268,6 +269,36 @@ describe('OttAnalyticsPlugin', function() {
       }
     };
     setTimeout(timeoutHandler, 3000);
+    player.play();
+  });
+
+  it('should media type equal media test', done => {
+    player = loadPlayer(config);
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        payload.bookmark.type.should.equal('media test');
+        done();
+      } catch (err) {
+        done(err);
+      }
+    });
+    player.play();
+  });
+
+  it('should media type equal by default MEDIA', done => {
+    let configMedia = config;
+    delete configMedia.sources.mediaType;
+    player = loadPlayer(configMedia);
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        payload.bookmark.type.should.equal('MEDIA');
+        done();
+      } catch (err) {
+        done(err);
+      }
+    });
     player.play();
   });
 });
