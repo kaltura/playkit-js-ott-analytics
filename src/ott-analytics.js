@@ -231,7 +231,9 @@ class OttAnalytics extends BasePlugin {
    */
   get _eventParams(): Object {
     return {
-      mediaType: Utils.Object.hasPropertyPath(this.player.config, 'sources.mediaType') ? this.player.config.sources.mediaType : MEDIA_TYPE,
+      mediaType: Utils.Object.hasPropertyPath(this.player.config, 'sources.metadata.mediaType')
+        ? this.player.config.sources.metadata.mediaType
+        : MEDIA_TYPE,
       fileId: this._fileId,
       mediaId: this.config.entryId,
       position: this.player.currentTime
