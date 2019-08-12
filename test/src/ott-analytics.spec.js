@@ -288,7 +288,7 @@ describe('OttAnalyticsPlugin', function() {
 
   it('should media type equal by default MEDIA', done => {
     let configMedia = config;
-    delete configMedia.sources.mediaType;
+    delete configMedia.sources.metadata.mediaType;
     player = loadPlayer(configMedia);
     player.addEventListener(player.Event.FIRST_PLAY, () => {
       try {
