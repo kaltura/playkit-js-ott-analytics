@@ -272,7 +272,7 @@ describe('OttAnalyticsPlugin', function() {
     player.play();
   });
 
-  it('should media type equal media test', done => {
+  it('should get media type from config', done => {
     player = loadPlayer(config);
     player.addEventListener(player.Event.FIRST_PLAY, () => {
       try {
@@ -286,7 +286,7 @@ describe('OttAnalyticsPlugin', function() {
     player.play();
   });
 
-  it('should media type equal by default MEDIA', done => {
+  it('should get default value for mediaType when mediaType doesnt exist in config', done => {
     let configMedia = config;
     delete configMedia.sources.metadata.mediaType;
     player = loadPlayer(configMedia);
