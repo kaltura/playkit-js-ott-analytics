@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.2"></a>
+## [0.5.2](https://github.com/kaltura/playkit-ott-analytics/compare/v0.5.1...v0.5.2) (2019-08-19)
+
+
+### Bug Fixes
+
+* **FEC-9270:** report OTT media type in bookmark service ([#22](https://github.com/kaltura/playkit-ott-analytics/issues/22)) ([8d2149c](https://github.com/kaltura/playkit-ott-analytics/commit/8d2149c))
+
+
+
 <a name="0.5.1"></a>
 ## [0.5.1](https://github.com/kaltura/playkit-ott-analytics/compare/v0.5.0...v0.5.1) (2019-07-19)
 
