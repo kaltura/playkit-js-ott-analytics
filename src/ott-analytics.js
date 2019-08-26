@@ -1,5 +1,5 @@
 //@flow
-import {BasePlugin, Error, FakeEvent} from '@playkit-js/playkit-js';
+import {BasePlugin, Error, FakeEvent, Utils} from '@playkit-js/playkit-js';
 import {OTTBookmarkService, RequestBuilder} from '@playkit-js/ott-provider/dist/services/bookmark';
 
 type OttAnalyticsEventType = {[event: string]: string};
@@ -231,7 +231,9 @@ class OttAnalytics extends BasePlugin {
    */
   get _eventParams(): Object {
     return {
-      mediaType: MEDIA_TYPE,
+      mediaType: Utils.Object.hasPropertyPath(this.player.config, 'sources.metadata.mediaType')
+        ? this.player.config.sources.metadata.mediaType
+        : MEDIA_TYPE,
       fileId: this._fileId,
       mediaId: this.config.entryId,
       position: this.player.currentTime

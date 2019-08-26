@@ -4,7 +4,7 @@ import {OttAnalytics, BookmarkEvent, BookmarkError} from '../../src/ott-analytic
 
 describe('OttAnalyticsPlugin', function() {
   let player, sandbox, sendSpy, config;
-
+  const mediaType = 'media test';
   /**
    * @param {string} ks - ks
    * @param {Object} bookmark - event
@@ -49,6 +49,7 @@ describe('OttAnalyticsPlugin', function() {
         duration: 1000,
         dvr: false,
         metadata: {
+          mediaType: mediaType,
           '0': {key: 'Genre', value: 'Comedy|Action|Adventure|Animation|Family|Editor|'},
           '1': {key: 'Parental Rating', value: 'G|R|'},
           '2': {key: 'QUALITY', value: 'hd|sd|'},
@@ -287,6 +288,36 @@ describe('OttAnalyticsPlugin', function() {
       }
     };
     setTimeout(timeoutHandler, 3000);
+    player.play();
+  });
+
+  it('should get media type from config', done => {
+    player = loadPlayer(config);
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        payload.bookmark.type.should.equal(mediaType);
+        done();
+      } catch (err) {
+        done(err);
+      }
+    });
+    player.play();
+  });
+
+  it('should get default value for mediaType when mediaType doesnt exist in config', done => {
+    let configMedia = config;
+    delete configMedia.sources.metadata.mediaType;
+    player = loadPlayer(configMedia);
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        payload.bookmark.type.should.equal('MEDIA');
+        done();
+      } catch (err) {
+        done(err);
+      }
+    });
     player.play();
   });
 });
