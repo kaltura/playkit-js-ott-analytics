@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.3"></a>
+## [0.5.3](https://github.com/kaltura/playkit-ott-analytics/compare/v0.5.2...v0.5.3) (2019-10-31)
+
+
+### Bug Fixes
+
+* Chrome failed on travis - update travis.yml ([#23](https://github.com/kaltura/playkit-ott-analytics/issues/23)) ([2b633a5](https://github.com/kaltura/playkit-ott-analytics/commit/2b633a5))
+
+
+
 <a name="0.5.2"></a>
 ## [0.5.2](https://github.com/kaltura/playkit-ott-analytics/compare/v0.5.1...v0.5.2) (2019-08-19)
 
