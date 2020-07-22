@@ -1,9 +1,9 @@
 import '../../src/index';
-import {loadPlayer, Error, FakeEvent, EventType} from 'playkit-js';
-import * as TestUtils from 'playkit-js/test/src/utils/test-utils';
+import {loadPlayer, Error, FakeEvent, EventType} from '@playkit-js/playkit-js';
+import * as TestUtils from '@playkit-js/playkit-js/test/src/utils/test-utils';
 import {OttAnalytics, BookmarkEvent, BookmarkError} from '../../src/ott-analytics';
 
-describe('OttAnalyticsPlugin', function() {
+describe('OttAnalyticsPlugin', function () {
   let player, sandbox, sendSpy, config;
   const mediaType = 'media test';
   /**
@@ -19,7 +19,7 @@ describe('OttAnalyticsPlugin', function() {
     }
   }
 
-  before(function() {
+  before(function () {
     config = {
       logLevel: 'DEBUG',
       id: 258457,
@@ -77,15 +77,15 @@ describe('OttAnalyticsPlugin', function() {
     };
   });
 
-  beforeEach(function() {
-    sandbox = sinon.sandbox.create();
+  beforeEach(function () {
+    sandbox = sinon.createSandbox();
     sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
     config.plugins.ottAnalytics.ks = config.session.ks;
     config.plugins.ottAnalytics.isAnonymous = false;
     config.plugins.ottAnalytics.serviceUrl = '//api-preprod.ott.kaltura.com/v4_7/api_v3';
   });
 
-  afterEach(function() {
+  afterEach(function () {
     sandbox.restore();
     player.destroy();
     TestUtils.removeVideoElementsFromTestPage();
@@ -146,7 +146,7 @@ describe('OttAnalyticsPlugin', function() {
       done();
     });
     player.play();
-    setTimeout(function() {
+    setTimeout(function () {
       player.pause();
     }, 1000);
   });
@@ -330,12 +330,12 @@ describe('_sendAnalytics', () => {
     };
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     ottAnalytics = new OttAnalytics('ottAnalytics', playerMock, config);
     ottAnalytics._fileId = 123;
   });
 
-  afterEach(function() {
+  afterEach(function () {
     ottAnalytics.destroy();
     ottAnalytics = null;
     requests = [];
@@ -493,12 +493,12 @@ describe('STOP event', () => {
     };
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     ottAnalytics = new OttAnalytics('ottAnalytics', playerMock, config);
     ottAnalytics._fileId = 123;
   });
 
-  afterEach(function() {
+  afterEach(function () {
     ottAnalytics.destroy();
     ottAnalytics = null;
     requests = [];

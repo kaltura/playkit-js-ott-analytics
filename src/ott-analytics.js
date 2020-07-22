@@ -1,5 +1,5 @@
 //@flow
-import {BasePlugin, Error, FakeEvent, Utils} from 'playkit-js';
+import {BasePlugin, Error, FakeEvent, Utils} from '@playkit-js/playkit-js';
 import {OTTBookmarkService, RequestBuilder} from 'playkit-js-providers/dist/playkit-bookmark-service';
 
 type OttAnalyticsEventType = {[event: string]: string};
