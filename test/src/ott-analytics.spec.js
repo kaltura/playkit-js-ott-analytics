@@ -1,11 +1,12 @@
 import '../../src/index';
 import {loadPlayer, Error, FakeEvent, EventType} from '@playkit-js/playkit-js';
-import * as TestUtils from '@playkit-js/playkit-js/test/src/utils/test-utils';
+import * as TestUtils from './utils/test-utils';
 import {OttAnalytics, BookmarkEvent, BookmarkError} from '../../src/ott-analytics';
 
 describe('OttAnalyticsPlugin', function () {
   let player, sandbox, sendSpy, config;
   const mediaType = 'media test';
+
   /**
    * @param {string} ks - ks
    * @param {Object} bookmark - event
