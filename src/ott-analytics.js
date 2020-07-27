@@ -52,7 +52,7 @@ class OttAnalytics extends BasePlugin {
   _isStopped: boolean = false;
   _fileId: number = 0;
   _didFirstPlay: boolean = false;
-  _mediaHitInterval: ?number = null;
+  _mediaHitInterval: ?IntervalID = null;
   _playerDidError: boolean = false;
 
   /**
