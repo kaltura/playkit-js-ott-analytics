@@ -482,7 +482,6 @@ describe('STOP event', () => {
       removeEventListener: sinon.spy(),
       isLive: () => false
     };
-    spy = sinon.spy(playerMock, 'dispatchEvent');
 
     config = {
       serviceUrl: '123',
@@ -492,6 +491,7 @@ describe('STOP event', () => {
   });
 
   beforeEach(function () {
+    spy = sinon.spy(playerMock, 'dispatchEvent');
     ottAnalytics = new OttAnalytics('ottAnalytics', playerMock, config);
     ottAnalytics._fileId = 123;
   });
@@ -500,10 +500,6 @@ describe('STOP event', () => {
     ottAnalytics.destroy();
     ottAnalytics = null;
     requests = [];
-    spy.reset();
-  });
-
-  after(() => {
     spy.restore();
   });
 
