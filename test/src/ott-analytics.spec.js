@@ -4,7 +4,8 @@ import * as TestUtils from './utils/test-utils';
 import {OttAnalytics, BookmarkEvent, BookmarkError} from '../../src/ott-analytics';
 
 describe('OttAnalyticsPlugin', function () {
-  let player, sandbox, sendSpy, config;
+  let player, sendSpy, config;
+  const sandbox = sinon.createSandbox();
   const mediaType = 'media test';
 
   /**
@@ -79,7 +80,6 @@ describe('OttAnalyticsPlugin', function () {
   });
 
   beforeEach(function () {
-    sandbox = sinon.createSandbox();
     sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
     config.plugins.ottAnalytics.ks = config.session.ks;
     config.plugins.ottAnalytics.isAnonymous = false;
@@ -87,9 +87,34 @@ describe('OttAnalyticsPlugin', function () {
   });
 
   afterEach(function () {
-    sandbox.restore();
     player.destroy();
+    sandbox.restore();
     TestUtils.removeVideoElementsFromTestPage();
+  });
+
+  it('should not send media mark if configured to disable', done => {
+    config.plugins.ottAnalytics.disableMediaMark = true;
+    player = loadPlayer(config);
+    const timeupdateHandler = () => {
+      if (player.currentTime > 3) {
+        player.pause();
+        let error = null;
+        sendSpy.getCalls().forEach(call => {
+          const payload = JSON.parse(call.args);
+          console.log(payload.bookmark);
+          try {
+            payload.bookmark.playerData.action.should.equal('HIT');
+          } catch (e) {
+            error = e;
+          }
+        });
+        player.removeEventListener(player.Event.TIME_UPDATE, timeupdateHandler);
+        config.plugins.ottAnalytics.disableMediaMark = false;
+        done(error);
+      }
+    };
+    player.addEventListener(player.Event.TIME_UPDATE, timeupdateHandler);
+    player.play();
   });
 
   it('should do nothing if service URL not provided', () => {
@@ -206,30 +231,6 @@ describe('OttAnalyticsPlugin', function () {
     player.play();
   });
 
-  it('should not send media mark if configured to disable', done => {
-    config.plugins.ottAnalytics.disableMediaMark = true;
-    player = loadPlayer(config);
-    const timeupdateHandler = () => {
-      if (player.currentTime > 3) {
-        player.pause();
-        let error = null;
-        sendSpy.getCalls().forEach(call => {
-          const payload = JSON.parse(call.args);
-          try {
-            payload.bookmark.playerData.action.should.equal('HIT');
-          } catch (e) {
-            error = e;
-          }
-        });
-        player.removeEventListener(player.Event.TIME_UPDATE, timeupdateHandler);
-        config.plugins.ottAnalytics.disableMediaMark = false;
-        done(error);
-      }
-    };
-    player.addEventListener(player.Event.TIME_UPDATE, timeupdateHandler);
-    player.play();
-  });
-
   it('should not send media hit if media type is LIVE', done => {
     config.sources.type = 'Live';
     player = loadPlayer(config);
@@ -323,6 +324,8 @@ describe('_sendAnalytics', () => {
       isLive: () => false
     };
 
+    spy = sinon.spy(playerMock, 'dispatchEvent');
+
     config = {
       serviceUrl: '123',
       entryId: '123',
@@ -332,7 +335,6 @@ describe('_sendAnalytics', () => {
   });
 
   beforeEach(function () {
-    spy = sinon.spy(playerMock, 'dispatchEvent');
     ottAnalytics = new OttAnalytics('ottAnalytics', playerMock, config);
     ottAnalytics._fileId = 123;
   });
@@ -341,6 +343,10 @@ describe('_sendAnalytics', () => {
     ottAnalytics.destroy();
     ottAnalytics = null;
     requests = [];
+    spy.resetHistory();
+  });
+
+  after(function () {
     spy.restore();
   });
 
@@ -503,6 +509,10 @@ describe('STOP event', () => {
     ottAnalytics = null;
     requests = [];
     spy.resetHistory();
+  });
+
+  after(function () {
+    spy.restore();
   });
 
   it('should be called if player was reset before media ended', () => {
