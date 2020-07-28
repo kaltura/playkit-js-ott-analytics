@@ -313,6 +313,7 @@ describe('_sendAnalytics', () => {
     xhr.onCreate = xhr => {
       requests.push(xhr);
     };
+
     playerMock = {
       Event: {},
       currentTime: () => 0,
@@ -321,7 +322,6 @@ describe('_sendAnalytics', () => {
       removeEventListener: sinon.spy(),
       isLive: () => false
     };
-    spy = sinon.spy(playerMock, 'dispatchEvent');
 
     config = {
       serviceUrl: '123',
@@ -334,16 +334,13 @@ describe('_sendAnalytics', () => {
   beforeEach(function () {
     ottAnalytics = new OttAnalytics('ottAnalytics', playerMock, config);
     ottAnalytics._fileId = 123;
+    spy = sinon.spy(playerMock, 'dispatchEvent');
   });
 
   afterEach(function () {
     ottAnalytics.destroy();
     ottAnalytics = null;
     requests = [];
-    spy.reset();
-  });
-
-  after(() => {
     spy.restore();
   });
 
