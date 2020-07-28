@@ -314,6 +314,8 @@ describe('_sendAnalytics', () => {
       requests.push(xhr);
     };
 
+    spy = sinon.spy(playerMock, 'dispatchEvent');
+
     playerMock = {
       Event: {},
       currentTime: () => 0,
@@ -334,14 +336,13 @@ describe('_sendAnalytics', () => {
   beforeEach(function () {
     ottAnalytics = new OttAnalytics('ottAnalytics', playerMock, config);
     ottAnalytics._fileId = 123;
-    spy = sinon.spy(playerMock, 'dispatchEvent');
   });
 
   afterEach(function () {
     ottAnalytics.destroy();
     ottAnalytics = null;
     requests = [];
-    spy.restore();
+    spy.resetHistory();
   });
 
   it('should stop sending requests after destroy and clear interval', done => {
@@ -474,6 +475,7 @@ describe('STOP event', () => {
     xhr.onCreate = xhr => {
       requests.push(xhr);
     };
+
     playerMock = {
       Event: {},
       currentTime: 0,
@@ -483,6 +485,8 @@ describe('STOP event', () => {
       isLive: () => false
     };
 
+    spy = sinon.spy(playerMock, 'dispatchEvent');
+
     config = {
       serviceUrl: '123',
       entryId: '123',
@@ -491,7 +495,6 @@ describe('STOP event', () => {
   });
 
   beforeEach(function () {
-    spy = sinon.spy(playerMock, 'dispatchEvent');
     ottAnalytics = new OttAnalytics('ottAnalytics', playerMock, config);
     ottAnalytics._fileId = 123;
   });
@@ -500,7 +503,7 @@ describe('STOP event', () => {
     ottAnalytics.destroy();
     ottAnalytics = null;
     requests = [];
-    spy.restore();
+    spy.resetHistory();
   });
 
   it('should be called if player was reset before media ended', () => {
