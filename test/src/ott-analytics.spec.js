@@ -314,8 +314,6 @@ describe('_sendAnalytics', () => {
       requests.push(xhr);
     };
 
-    spy = sinon.spy(playerMock, 'dispatchEvent');
-
     playerMock = {
       Event: {},
       currentTime: () => 0,
@@ -334,6 +332,7 @@ describe('_sendAnalytics', () => {
   });
 
   beforeEach(function () {
+    spy = sinon.spy(playerMock, 'dispatchEvent');
     ottAnalytics = new OttAnalytics('ottAnalytics', playerMock, config);
     ottAnalytics._fileId = 123;
   });
@@ -342,7 +341,7 @@ describe('_sendAnalytics', () => {
     ottAnalytics.destroy();
     ottAnalytics = null;
     requests = [];
-    spy.resetHistory();
+    spy.restore();
   });
 
   it('should stop sending requests after destroy and clear interval', done => {
