@@ -1,5 +1,5 @@
 //@flow
-import {BasePlugin, Error, FakeEvent, Utils} from 'playkit-js';
+import {BasePlugin, Error, FakeEvent, Utils} from '@playkit-js/playkit-js';
 import {OTTBookmarkService, RequestBuilder} from 'playkit-js-providers/dist/playkit-bookmark-service';
 
 type OttAnalyticsEventType = {[event: string]: string};
@@ -52,7 +52,7 @@ class OttAnalytics extends BasePlugin {
   _isStopped: boolean = false;
   _fileId: number = 0;
   _didFirstPlay: boolean = false;
-  _mediaHitInterval: ?number = null;
+  _mediaHitInterval: ?IntervalID = null;
   _playerDidError: boolean = false;
 
   /**
