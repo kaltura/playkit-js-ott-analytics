@@ -6074,9 +6074,9 @@ pkg-dir@^4.1.0, pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-"playkit-js-providers@https://github.com/kaltura/playkit-js-providers.git#update-dist":
+"playkit-js-providers@https://github.com/kaltura/playkit-js-providers.git#master":
   version "2.21.1"
-  resolved "https://github.com/kaltura/playkit-js-providers.git#0332bb32ebe9815faac34101443d77e50ac4688f"
+  resolved "https://github.com/kaltura/playkit-js-providers.git#9ddacb17ddd13139653b158292b00b2e9e90bfa3"
   dependencies:
     js-logger "^1.6.0"
 
