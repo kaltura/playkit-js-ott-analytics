@@ -213,19 +213,19 @@ describe('OttAnalyticsPlugin', function () {
   it('should send media hit', done => {
     player = setup(config);
     player.addEventListener(player.Event.FIRST_PLAY, () => {
-      player.currentTime = player.duration - (player.duration + 1.5);
-    });
-    player.addEventListener(player.Event.TIME_UPDATE, () => {
-      try {
-        const payload = JSON.parse(sendSpy.lastCall.args[0]);
-        verifyPayloadProperties(payload.ks, payload.bookmark);
-        if (player.currentTime == 1.5) {
-          payload.bookmark.playerData.action.should.equal('HIT');
+      player.addEventListener(player.Event.TIME_UPDATE, () => {
+        try {
+          const payload = JSON.parse(sendSpy.lastCall.args[0]);
+          verifyPayloadProperties(payload.ks, payload.bookmark);
+          if (player.currentTime == 1.5) {
+            payload.bookmark.playerData.action.should.equal('HIT');
+          }
+          done();
+        } catch (e) {
+          done(e);
         }
-        done();
-      } catch (e) {
-        done(e);
-      }
+      });
+      player.currentTime = player.duration - (player.duration + 1.5);
     });
     player.play();
   });
