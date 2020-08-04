@@ -1,7 +1,10 @@
 import '../../src/index';
-import {loadPlayer, Error, FakeEvent, EventType} from '@playkit-js/playkit-js';
+import {core, setup} from 'kaltura-player-js';
 import * as TestUtils from './utils/test-utils';
 import {OttAnalytics, BookmarkEvent, BookmarkError} from '../../src/ott-analytics';
+
+const {Error, FakeEvent, EventType} = core;
+const targetId = 'player-placeholder_ott-analytics.spec';
 
 describe('OttAnalyticsPlugin', function () {
   let player, sendSpy, config;
@@ -15,16 +18,18 @@ describe('OttAnalyticsPlugin', function () {
    */
   function verifyPayloadProperties(ks, bookmark) {
     ks.should.equal(player.config.session.ks);
-    bookmark.id.should.equal(player.config.id);
+    bookmark.id.should.equal(player.config.sources.id);
     if (bookmark.duration) {
       bookmark.duration.should.equal(player.duration);
     }
   }
 
   before(function () {
+    TestUtils.createElement('DIV', targetId);
     config = {
+      targetId,
+      provider: {},
       logLevel: 'DEBUG',
-      id: 258457,
       name: 'Big Hero 6',
       session: {
         partnerId: 198,
@@ -32,6 +37,7 @@ describe('OttAnalyticsPlugin', function () {
           'djJ8MTk4fPIz_ugsVrW8JwEX7detBwnuNZq2YVowN9VlB1d8gkHLY1wR6-GaeGYBxD6XBQ6SvDw6crDHhFpvsi7jcudRS2t1bSNFgIT5H2sZrHAGg_uasYXV6YHsm43_d_PsKgmnunAjFniOYXggUo8cT9RtSPo='
       },
       sources: {
+        id: 258457,
         progressive: [
           {
             id: '391837,url',
@@ -40,14 +46,7 @@ describe('OttAnalyticsPlugin', function () {
           }
         ],
         dash: [],
-        hls: [
-          {
-            id: '397008,applehttp',
-            url:
-              '//api-preprod.ott.kaltura.com/v4_7/api_v3/service/assetFile/action/playManifest/partnerId/198/assetId/258457/assetType/media/assetFileId/397008/contextType/TRAILER/a.m3u8',
-            mimetype: 'application/x-mpegURL'
-          }
-        ],
+        hls: [],
         type: 'Vod',
         duration: 1000,
         dvr: false,
@@ -70,7 +69,7 @@ describe('OttAnalyticsPlugin', function () {
     };
     config.plugins = {
       ottAnalytics: {
-        entryId: config.id,
+        entryId: config.sources.id,
         fileId: '392026',
         ks: config.session.ks,
         partnerId: config.session.partnerId,
@@ -94,7 +93,7 @@ describe('OttAnalyticsPlugin', function () {
 
   it('should not send media mark if configured to disable', done => {
     config.plugins.ottAnalytics.disableMediaMark = true;
-    player = loadPlayer(config);
+    player = setup(config);
     const timeupdateHandler = () => {
       if (player.currentTime > 3) {
         player.pause();
@@ -119,57 +118,73 @@ describe('OttAnalyticsPlugin', function () {
 
   it('should do nothing if service URL not provided', () => {
     config.plugins.ottAnalytics.serviceUrl = undefined;
-    player = loadPlayer(config);
+    player = setup(config);
     (!sendSpy.lastCall).should.be.true;
   });
 
   it('should not send reports for anonymous users', () => {
     config.plugins.ottAnalytics.isAnonymous = true;
-    player = loadPlayer(config);
+    player = setup(config);
     sendSpy.callCount.should.equal(0);
   });
 
   it('should send media loaded on calling to load method', done => {
-    player = loadPlayer(config);
+    player = setup(config);
     player.addEventListener(player.Event.MEDIA_LOADED, () => {
-      const payload = JSON.parse(sendSpy.lastCall.args[0]);
-      verifyPayloadProperties(payload.ks, payload.bookmark);
-      payload.bookmark.playerData.action.should.equal('LOAD');
-      done();
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('LOAD');
+        done();
+      } catch (e) {
+        done(e);
+      }
     });
     player.load();
   });
 
   it('should send media loaded when preload is set to "auto"', done => {
     config.playback = {preload: 'auto'};
-    player = loadPlayer(config);
+    player = setup(config);
     player.addEventListener(player.Event.MEDIA_LOADED, () => {
-      const payload = JSON.parse(sendSpy.lastCall.args[0]);
-      verifyPayloadProperties(payload.ks, payload.bookmark);
-      payload.bookmark.playerData.action.should.equal('LOAD');
-      config.playback = {preload: 'none'};
-      done();
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('LOAD');
+        config.playback = {preload: 'none'};
+        done();
+      } catch (e) {
+        done(e);
+      }
     });
   });
 
   it('should send first play', done => {
-    player = loadPlayer(config);
+    player = setup(config);
     player.addEventListener(player.Event.FIRST_PLAY, () => {
-      const payload = JSON.parse(sendSpy.lastCall.args[0]);
-      verifyPayloadProperties(payload.ks, payload.bookmark);
-      payload.bookmark.playerData.action.should.equal('FIRST_PLAY');
-      done();
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('FIRST_PLAY');
+        done();
+      } catch (e) {
+        done(e);
+      }
     });
     player.play();
   });
 
   it('should send pause', done => {
-    player = loadPlayer(config);
+    player = setup(config);
     player.addEventListener(player.Event.PAUSE, () => {
-      const payload = JSON.parse(sendSpy.lastCall.args[0]);
-      verifyPayloadProperties(payload.ks, payload.bookmark);
-      payload.bookmark.playerData.action.should.equal('PAUSE');
-      done();
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('PAUSE');
+        done();
+      } catch (e) {
+        done(e);
+      }
     });
     player.play();
     setTimeout(function () {
@@ -178,38 +193,46 @@ describe('OttAnalyticsPlugin', function () {
   });
 
   it('should send ended', done => {
-    player = loadPlayer(config);
+    player = setup(config);
     player.addEventListener(player.Event.FIRST_PLAY, () => {
       player.currentTime = player.duration - 1;
     });
     player.addEventListener(player.Event.ENDED, () => {
-      const payload = JSON.parse(sendSpy.lastCall.args[0]);
-      verifyPayloadProperties(payload.ks, payload.bookmark);
-      payload.bookmark.playerData.action.should.equal('FINISH');
-      done();
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('FINISH');
+        done();
+      } catch (e) {
+        done(e);
+      }
     });
     player.play();
   });
 
   it('should send media hit', done => {
-    player = loadPlayer(config);
+    player = setup(config);
     player.addEventListener(player.Event.FIRST_PLAY, () => {
       player.currentTime = player.duration - (player.duration + 1.5);
     });
     player.addEventListener(player.Event.TIME_UPDATE, () => {
-      const payload = JSON.parse(sendSpy.lastCall.args[0]);
-      verifyPayloadProperties(payload.ks, payload.bookmark);
-      if (player.currentTime == 1.5) {
-        payload.bookmark.playerData.action.should.equal('HIT');
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        if (player.currentTime == 1.5) {
+          payload.bookmark.playerData.action.should.equal('HIT');
+        }
+        done();
+      } catch (e) {
+        done(e);
       }
-      done();
     });
     player.play();
   });
 
   it('should not send media hit if configured to disable', done => {
     config.plugins.ottAnalytics.disableMediaHit = true;
-    player = loadPlayer(config);
+    player = setup(config);
     const timeupdateHandler = () => {
       if (player.currentTime > 3) {
         player.pause();
@@ -233,7 +256,7 @@ describe('OttAnalyticsPlugin', function () {
 
   it('should not send media hit if media type is LIVE', done => {
     config.sources.type = 'Live';
-    player = loadPlayer(config);
+    player = setup(config);
     const timeoutHandler = () => {
       player.pause();
       let error = null;
@@ -253,7 +276,7 @@ describe('OttAnalyticsPlugin', function () {
   });
 
   it('should not send media hit/mark after critical player error', done => {
-    player = loadPlayer(config);
+    player = setup(config);
     this.numberOfReprots = 0;
     const timeoutHandler = () => {
       const error = new Error(Error.Severity.CRITICAL, Error.Category.PLAYER, Error.Code.RUNTIME_ERROR_METHOD_NOT_IMPLEMENTED, 'static canPlayDrm');
@@ -275,7 +298,7 @@ describe('OttAnalyticsPlugin', function () {
   });
 
   it('should get media type from config', done => {
-    player = loadPlayer(config);
+    player = setup(config);
     player.addEventListener(player.Event.FIRST_PLAY, () => {
       try {
         const payload = JSON.parse(sendSpy.lastCall.args[0]);
@@ -291,7 +314,7 @@ describe('OttAnalyticsPlugin', function () {
   it('should get default value for mediaType when mediaType doesnt exist in config', done => {
     let configMedia = config;
     delete configMedia.sources.metadata.mediaType;
-    player = loadPlayer(configMedia);
+    player = setup(configMedia);
     player.addEventListener(player.Event.FIRST_PLAY, () => {
       try {
         const payload = JSON.parse(sendSpy.lastCall.args[0]);

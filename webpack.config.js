@@ -2,6 +2,7 @@
 
 const webpack = require('webpack');
 const path = require('path');
+const TEST = process.env.NODE_ENV === 'test';
 const packageData = require('./package.json');
 
 let plugins = [
@@ -23,7 +24,7 @@ module.exports = {
     libraryTarget: 'umd',
     devtoolModuleFilenameTemplate: './ott-analytics/[resource-path]'
   },
-  devtool: 'source-map',
+  devtool: TEST ? 'inline-source-map' : 'source-map',
   plugins: plugins,
   module: {
     rules: [
@@ -57,20 +58,27 @@ module.exports = {
     contentBase: __dirname + '/src'
   },
   resolve: {
+    alias: TEST
+      ? {
+          'kaltura-player-js': path.resolve('./node_modules/kaltura-player-js/dist/kaltura-ovp-player')
+        }
+      : {},
     modules: [path.resolve(__dirname, 'src'), 'node_modules']
   },
-  externals: {
-    '@playkit-js/playkit-js': {
-      commonjs: '@playkit-js/playkit-js',
-      commonjs2: '@playkit-js/playkit-js',
-      amd: 'playkit-js',
-      root: ['KalturaPlayer', 'core']
-    },
-    'playkit-js-providers': {
-      commonjs: 'playkit-js-providers',
-      commonjs2: 'playkit-js-providers',
-      amd: 'playkit-js-providers',
-      root: ['KalturaPlayer', 'providers']
-    }
-  }
+  externals: TEST
+    ? {}
+    : {
+        'playkit-js-providers': {
+          commonjs: 'playkit-js-providers',
+          commonjs2: 'playkit-js-providers',
+          amd: 'playkit-js-providers',
+          root: ['KalturaPlayer', 'providers']
+        },
+        'kaltura-player-js': {
+          commonjs: 'kaltura-player-js',
+          commonjs2: 'kaltura-player-js',
+          amd: 'kaltura-player-js',
+          root: ['KalturaPlayer']
+        }
+      }
 };
