@@ -14,12 +14,20 @@ const customLaunchers = {
   }
 };
 
+const launchers = {
+  Chrome_browser: {
+    base: 'Chrome',
+    flags: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required']
+  }
+};
+
 module.exports = function (config) {
   let karmaConf = {
     logLevel: config.LOG_INFO,
     browserDisconnectTimeout: 60000,
     browserNoActivityTimeout: 60000,
-    browsers: ['Chrome', 'Firefox'],
+    customLaunchers: launchers,
+    browsers: ['Chrome_browser', 'Firefox'],
     concurrency: 1,
     singleRun: true,
     colors: true,
@@ -37,7 +45,7 @@ module.exports = function (config) {
     client: {
       mocha: {
         reporter: 'html',
-        timeout: 50000
+        timeout: 10000
       }
     }
   };
