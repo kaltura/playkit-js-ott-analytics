@@ -1,6 +1,22 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [0.6.0](https://github.com/kaltura/playkit-ott-analytics/compare/v0.5.3...v0.6.0) (2020-08-05)
+
+
+### Build System
+
+* github bad certificate ([#31](https://github.com/kaltura/playkit-ott-analytics/issues/31)) ([4b30082](https://github.com/kaltura/playkit-ott-analytics/commit/4b30082))
+
+
+### Features
+
+* **FEC-10057:** move the plugin manager to kaltura player ([#37](https://github.com/kaltura/playkit-ott-analytics/issues/37)) ([30a3165](https://github.com/kaltura/playkit-ott-analytics/commit/30a3165))
+* **FEC-10290:** upgrade NPM packages ([#36](https://github.com/kaltura/playkit-ott-analytics/issues/36)) ([a113d01](https://github.com/kaltura/playkit-ott-analytics/commit/a113d01))
+* **FEC-10291:** migrate analytics plugins injection from kaltura Player to server ([#35](https://github.com/kaltura/playkit-ott-analytics/issues/35)) ([3c9510b](https://github.com/kaltura/playkit-ott-analytics/commit/3c9510b))
+
+
 
 <a name="0.5.3"></a>
 ## [0.5.3](https://github.com/kaltura/playkit-ott-analytics/compare/v0.5.2...v0.5.3) (2019-10-31)
