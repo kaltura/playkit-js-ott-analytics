@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.6.1](https://github.com/kaltura/playkit-ott-analytics/compare/v0.6.0...v0.6.1) (2020-09-07)
+
+
+### Build System
+
+* **FEC-10064:** add automatic release notes ([#41](https://github.com/kaltura/playkit-ott-analytics/issues/41)) ([af11b17](https://github.com/kaltura/playkit-ott-analytics/commit/af11b17))
+
+
+### Tests
+
+* faster unit tests ([#39](https://github.com/kaltura/playkit-ott-analytics/issues/39)) ([d188c03](https://github.com/kaltura/playkit-ott-analytics/commit/d188c03))
+
+
+
 ## [0.6.0](https://github.com/kaltura/playkit-ott-analytics/compare/v0.5.3...v0.6.0) (2020-08-05)
 
 
