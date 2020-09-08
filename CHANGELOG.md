@@ -1,8 +1,22 @@
-# Changelog
+# Change Log
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [0.6.2](https://github.com/kaltura/playkit-ott-analytics/compare/v0.6.1...v0.6.2) (2020-09-08)
+# [1.0.0](https://github.com/kaltura/playkit-ott-analytics/compare/v0.6.0...v1.0.0) (2020-09-08)
+
+
+### Features
+
+* **FEC-10347:** expose kaltura player as a global variable instead of UMD ([#38](https://github.com/kaltura/playkit-ott-analytics/issues/38)) ([0a1114f](https://github.com/kaltura/playkit-ott-analytics/commit/0a1114f211c9998e5ce9ec1b4e712b43519c1753))
+
+
+### BREAKING CHANGES
+
+* **FEC-10347:** This package is not UMD anymore
+
+
+
+## [0.6.2](https://github.com/kaltura/playkit-ott-analytics/compare/v0.6.1...v0.6.2) (2020-09-08)
 
 
 
