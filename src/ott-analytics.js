@@ -237,7 +237,7 @@ class OttAnalytics extends BasePlugin {
         : MEDIA_TYPE,
       fileId: this._fileId,
       mediaId: this.config.entryId,
-      position: this.player.currentTime
+      position: this.player.isLive() ? this.player.currentTime - this.player.getStartTimeOfDvrWindow() : this.player.currentTime
     };
   }
 
