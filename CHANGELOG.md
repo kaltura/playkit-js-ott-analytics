@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.2](https://github.com/kaltura/playkit-ott-analytics/compare/v1.0.1...v1.0.2) (2021-09-30)
+
+
+### Bug Fixes
+
+* **FEC-11541:** position in live ott is wrong ([#58](https://github.com/kaltura/playkit-ott-analytics/issues/58)) ([8f2a8f5](https://github.com/kaltura/playkit-ott-analytics/commit/8f2a8f5))
+
+
+### Build System
+
+* **FEC-10700:** Improvement for CI/CD ([#56](https://github.com/kaltura/playkit-ott-analytics/issues/56)) ([5f78d48](https://github.com/kaltura/playkit-ott-analytics/commit/5f78d48))
+* **FEC-11389:** reduce builds from travis ([4c43a12](https://github.com/kaltura/playkit-ott-analytics/commit/4c43a12))
+
+
+
 ### [1.0.1](https://github.com/kaltura/playkit-ott-analytics/compare/v1.0.0...v1.0.1) (2020-11-03)
 
 
