@@ -48,6 +48,7 @@ class OttAnalytics extends BasePlugin {
     return true;
   }
 
+  _isLoaded: boolean = false;
   _isPlaying: boolean = false;
   _isFinished: boolean = false;
   _isStopped: boolean = false;
@@ -143,6 +144,7 @@ class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   _onMediaLoaded(): void {
+    this._isLoaded = true;
     this._sendAnalytics(BookmarkEvent.LOAD, this._eventParams);
   }
 
@@ -237,8 +239,20 @@ class OttAnalytics extends BasePlugin {
         : MEDIA_TYPE,
       fileId: this._fileId,
       mediaId: this.config.entryId,
-      position: this.player.isLive() ? this.player.currentTime - this.player.getStartTimeOfDvrWindow() : this.player.currentTime
+      position: this._getPosition()
     };
+  }
+
+  /**
+   * Get the player position.
+   * @private
+   * @returns {number} - The player position
+   */
+  _getPosition(): number {
+    if (!this._isLoaded && Utils.Object.hasPropertyPath(this.player.config, 'sources.startTime')) {
+      return this.player.config.sources.startTime;
+    }
+    return this.player.isLive() ? this.player.currentTime - this.player.getStartTimeOfDvrWindow() : this.player.currentTime;
   }
 
   /**
