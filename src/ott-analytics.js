@@ -83,6 +83,7 @@ class OttAnalytics extends BasePlugin {
     this._maybeSendStop();
     this._didFirstPlay = false;
     this._playerDidError = false;
+    this._isLoaded = false;
   }
 
   /**
