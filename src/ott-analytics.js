@@ -234,7 +234,6 @@ class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   _onVideoTrackChanged(): void {
-    // this._isLoaded = true;
     this._sendAnalytics(BookmarkEvent.BITRATE_CHANGE, this._eventParams);
   }
 
@@ -260,8 +259,8 @@ class OttAnalytics extends BasePlugin {
    * @returns {number} - The player position
    */
   _getPosition(): number {
-    if (!this._isLoaded && Utils.Object.hasPropertyPath(this.player.config, 'sources.startTime')) {
-      return this.player.config.sources.startTime;
+    if (!this._isLoaded && Utils.Object.hasPropertyPath(this.player.sources, 'sources.startTime')) {
+      return this.player.sources.startTime;
     }
     return this.player.isLive() ? this.player.currentTime - this.player.getStartTimeOfDvrWindow() : this.player.currentTime;
   }
