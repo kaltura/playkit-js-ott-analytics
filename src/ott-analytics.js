@@ -112,6 +112,7 @@ class OttAnalytics extends BasePlugin {
   _registerListeners(): void {
     const PlayerEvent = this.player.Event;
     this.eventManager.listen(this.player, PlayerEvent.FIRST_PLAY, () => this._onFirstPlay());
+    this.eventManager.listen(this.player, PlayerEvent.FIRST_PLAYING, () => this._onFirstPlaying());
     this.eventManager.listen(this.player, PlayerEvent.PLAY, () => this._onPlay());
     this.eventManager.listen(this.player, PlayerEvent.PAUSE, () => this._onPause());
     this.eventManager.listen(this.player, PlayerEvent.ENDED, () => this._onEnded());
@@ -145,8 +146,16 @@ class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   _onMediaLoaded(): void {
-    this._isLoaded = true;
     this._sendAnalytics(BookmarkEvent.LOAD, this._eventParams);
+  }
+
+  /**
+   * The first playing event listener.
+   * @private
+   * @returns {void}
+   */
+  _onFirstPlaying(): void {
+    this._isLoaded = true;
   }
 
   /**
@@ -225,6 +234,7 @@ class OttAnalytics extends BasePlugin {
    * @returns {void}
    */
   _onVideoTrackChanged(): void {
+    // this._isLoaded = true;
     this._sendAnalytics(BookmarkEvent.BITRATE_CHANGE, this._eventParams);
   }
 

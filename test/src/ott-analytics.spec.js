@@ -174,6 +174,74 @@ describe('OttAnalyticsPlugin', function () {
     player.play();
   });
 
+  it('should send first play with position 0 - no start time configuration', done => {
+    player = setup(config);
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('FIRST_PLAY');
+        payload.bookmark.position.should.equal(0);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    player.play();
+  });
+
+  it('should send play with position 0 - no start time configuration', done => {
+    player = setup(config);
+    player.addEventListener(player.Event.PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('PLAY');
+        payload.bookmark.position.should.equal(0);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    player.play();
+  });
+
+  it('should send first play with configured playback start time', done => {
+    config.playback.startTime = 3;
+    player = setup(config);
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('FIRST_PLAY');
+        payload.bookmark.position.should.equal(3);
+        config.playback = {preload: 'none'};
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    player.play();
+  });
+
+  it('should send play with configured playback start time', done => {
+    config.playback.startTime = 4;
+    player = setup(config);
+    player.addEventListener(player.Event.PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('PLAY');
+        payload.bookmark.position.should.equal(4);
+        config.playback = {preload: 'none'};
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    player.play();
+  });
+
   it('should send pause', done => {
     player = setup(config);
     player.addEventListener(player.Event.PAUSE, () => {
