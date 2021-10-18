@@ -259,7 +259,7 @@ class OttAnalytics extends BasePlugin {
    * @returns {number} - The player position
    */
   _getPosition(): number {
-    if (!this._isLoaded && Utils.Object.hasPropertyPath(this.player.sources, 'sources.startTime')) {
+    if (!this._isLoaded && Utils.Object.hasPropertyPath(this.player.sources, 'startTime')) {
       return this.player.sources.startTime;
     }
     return this.player.isLive() ? this.player.currentTime - this.player.getStartTimeOfDvrWindow() : this.player.currentTime;
