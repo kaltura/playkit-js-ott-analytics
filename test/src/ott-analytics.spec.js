@@ -251,7 +251,7 @@ describe('OttAnalyticsPlugin', function () {
           const payload = JSON.parse(sendSpy.lastCall.args[0]);
           verifyPayloadProperties(payload.ks, payload.bookmark);
           payload.bookmark.playerData.action.should.equal('PLAY');
-          payload.bookmark.position.should.equal(0);
+          payload.bookmark.position.should.equal(player.currentTime);
           delete config.sources.startTime;
           done();
         } catch (e) {
