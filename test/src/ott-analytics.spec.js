@@ -244,6 +244,7 @@ describe('OttAnalyticsPlugin', function () {
 
   it('should send FIRST_PLAY with actual current time when preload set to auto (not configured start time', done => {
     config.sources.startTime = 3;
+    config.playback = {preload: 'auto'};
     player = setup(config);
     player.addEventListener(player.Event.FIRST_PLAY, () => {
       try {
@@ -252,6 +253,7 @@ describe('OttAnalyticsPlugin', function () {
         payload.bookmark.playerData.action.should.equal('FIRST_PLAY');
         payload.bookmark.position.should.equal(player.currentTime);
         delete config.sources.startTime;
+        config.playback = {preload: 'none'};
         done();
       } catch (e) {
         done(e);
@@ -262,6 +264,7 @@ describe('OttAnalyticsPlugin', function () {
 
   it('should send PLAY with with actual current time when preload set to auto (not configured start time)', done => {
     config.sources.startTime = 2.5;
+    config.playback = {preload: 'auto'};
     player = setup(config);
     player.addEventListener(player.Event.PLAY, () => {
       try {
@@ -270,6 +273,7 @@ describe('OttAnalyticsPlugin', function () {
         payload.bookmark.playerData.action.should.equal('PLAY');
         payload.bookmark.position.should.equal(player.currentTime);
         delete config.sources.startTime;
+        config.playback = {preload: 'none'};
         done();
       } catch (e) {
         done(e);
