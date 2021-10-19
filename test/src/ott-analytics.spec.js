@@ -242,7 +242,7 @@ describe('OttAnalyticsPlugin', function () {
     player.play();
   });
 
-  it('should send FIRST_PLAY with actual current time when preload set to auto (not configured start time', done => {
+  it('should send FIRST_PLAY with actual current time when preload set to auto (not the configured start time', done => {
     config.sources.startTime = 3;
     config.playback = {preload: 'auto'};
     player = setup(config);
@@ -262,7 +262,7 @@ describe('OttAnalyticsPlugin', function () {
     player.play();
   });
 
-  it('should send PLAY with with actual current time when preload set to auto (not configured start time)', done => {
+  it('should send PLAY with with actual current time when preload set to auto (not the configured start time)', done => {
     config.sources.startTime = 2.5;
     config.playback = {preload: 'auto'};
     player = setup(config);
@@ -274,6 +274,47 @@ describe('OttAnalyticsPlugin', function () {
         payload.bookmark.position.should.equal(player.currentTime);
         delete config.sources.startTime;
         config.playback = {preload: 'none'};
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    player.play();
+  });
+
+  it('should send FIRST_PLAY with actual current time when autoplay', done => {
+    config.sources.startTime = 3;
+    config.playback = {preload: 'none'};
+    config.playback = {autoplay: true};
+    player = setup(config);
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('FIRST_PLAY');
+        payload.bookmark.position.should.equal(player.currentTime);
+        delete config.sources.startTime;
+        config.playback = {preload: 'none'};
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    player.play();
+  });
+
+  it('should send PLAY with with actual current time when autoplay and preload', done => {
+    config.sources.startTime = 2.5;
+    config.playback = {preload: 'auto'};
+    config.playback = {autoplay: 'true'};
+    player = setup(config);
+    player.addEventListener(player.Event.PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('PLAY');
+        payload.bookmark.position.should.equal(player.currentTime);
+        delete config.sources.startTime;
         done();
       } catch (e) {
         done(e);
