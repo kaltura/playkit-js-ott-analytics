@@ -181,7 +181,7 @@ describe('OttAnalyticsPlugin', function () {
         const payload = JSON.parse(sendSpy.lastCall.args[0]);
         verifyPayloadProperties(payload.ks, payload.bookmark);
         payload.bookmark.playerData.action.should.equal('FIRST_PLAY');
-        payload.bookmark.position.should.equal(0);
+        payload.bookmark.position.should.equal(player.currentTime);
         done();
       } catch (e) {
         done(e);
@@ -197,7 +197,7 @@ describe('OttAnalyticsPlugin', function () {
         const payload = JSON.parse(sendSpy.lastCall.args[0]);
         verifyPayloadProperties(payload.ks, payload.bookmark);
         payload.bookmark.playerData.action.should.equal('PLAY');
-        payload.bookmark.position.should.equal(0);
+        payload.bookmark.position.should.equal(player.currentTime);
         done();
       } catch (e) {
         done(e);
