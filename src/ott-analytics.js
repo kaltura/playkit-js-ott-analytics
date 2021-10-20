@@ -48,6 +48,7 @@ class OttAnalytics extends BasePlugin {
     return true;
   }
 
+  _isLoaded: boolean = false;
   _isPlaying: boolean = false;
   _isFinished: boolean = false;
   _isStopped: boolean = false;
@@ -82,6 +83,7 @@ class OttAnalytics extends BasePlugin {
     this._maybeSendStop();
     this._didFirstPlay = false;
     this._playerDidError = false;
+    this._isLoaded = false;
   }
 
   /**
@@ -110,6 +112,7 @@ class OttAnalytics extends BasePlugin {
   _registerListeners(): void {
     const PlayerEvent = this.player.Event;
     this.eventManager.listen(this.player, PlayerEvent.FIRST_PLAY, () => this._onFirstPlay());
+    this.eventManager.listen(this.player, PlayerEvent.FIRST_PLAYING, () => this._onFirstPlaying());
     this.eventManager.listen(this.player, PlayerEvent.PLAY, () => this._onPlay());
     this.eventManager.listen(this.player, PlayerEvent.PAUSE, () => this._onPause());
     this.eventManager.listen(this.player, PlayerEvent.ENDED, () => this._onEnded());
@@ -144,6 +147,15 @@ class OttAnalytics extends BasePlugin {
    */
   _onMediaLoaded(): void {
     this._sendAnalytics(BookmarkEvent.LOAD, this._eventParams);
+  }
+
+  /**
+   * The first playing event listener.
+   * @private
+   * @returns {void}
+   */
+  _onFirstPlaying(): void {
+    this._isLoaded = true;
   }
 
   /**
@@ -237,8 +249,20 @@ class OttAnalytics extends BasePlugin {
         : MEDIA_TYPE,
       fileId: this._fileId,
       mediaId: this.config.entryId,
-      position: this.player.isLive() ? this.player.currentTime - this.player.getStartTimeOfDvrWindow() : this.player.currentTime
+      position: this._getPosition()
     };
+  }
+
+  /**
+   * Get the player position.
+   * @private
+   * @returns {number} - The player position
+   */
+  _getPosition(): number {
+    if (!this._isLoaded && Utils.Object.hasPropertyPath(this.player.sources, 'startTime') && this.player.currentTime === 0) {
+      return this.player.sources.startTime;
+    }
+    return this.player.isLive() ? this.player.currentTime - this.player.getStartTimeOfDvrWindow() : this.player.currentTime;
   }
 
   /**

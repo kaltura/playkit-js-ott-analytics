@@ -174,6 +174,180 @@ describe('OttAnalyticsPlugin', function () {
     player.play();
   });
 
+  it('should send FIRST_PLAY with position 0 - no start time configuration', done => {
+    player = setup(config);
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('FIRST_PLAY');
+        payload.bookmark.position.should.equal(player.currentTime);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    player.play();
+  });
+
+  it('should send PLAY with position 0 - no start time configuration', done => {
+    player = setup(config);
+    player.addEventListener(player.Event.PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('PLAY');
+        payload.bookmark.position.should.equal(player.currentTime);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    player.play();
+  });
+
+  it('should send FIRST_PLAY with configured playback start time', done => {
+    config.sources.startTime = 3;
+    player = setup(config);
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('FIRST_PLAY');
+        payload.bookmark.position.should.equal(3);
+        delete config.sources.startTime;
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    player.play();
+  });
+
+  it('should send PLAY with configured playback start time', done => {
+    config.sources.startTime = 2.5;
+    player = setup(config);
+    player.addEventListener(player.Event.PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('PLAY');
+        payload.bookmark.position.should.equal(2.5);
+        delete config.sources.startTime;
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    player.play();
+  });
+
+  it('should send FIRST_PLAY with actual current time when preload set to auto (not the configured start time', done => {
+    config.sources.startTime = 3;
+    config.playback = {preload: 'auto'};
+    player = setup(config);
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('FIRST_PLAY');
+        payload.bookmark.position.should.equal(player.currentTime);
+        delete config.sources.startTime;
+        config.playback = {preload: 'none'};
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    player.play();
+  });
+
+  it('should send PLAY with with actual current time when preload set to auto (not the configured start time)', done => {
+    config.sources.startTime = 2.5;
+    config.playback = {preload: 'auto'};
+    player = setup(config);
+    player.addEventListener(player.Event.PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('PLAY');
+        payload.bookmark.position.should.equal(player.currentTime);
+        delete config.sources.startTime;
+        config.playback = {preload: 'none'};
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    player.play();
+  });
+
+  it('should send FIRST_PLAY with actual current time when autoplay', done => {
+    config.sources.startTime = 3;
+    config.playback = {preload: 'none'};
+    config.playback = {autoplay: true};
+    player = setup(config);
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('FIRST_PLAY');
+        payload.bookmark.position.should.equal(player.currentTime);
+        delete config.sources.startTime;
+        config.playback = {preload: 'none'};
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    player.play();
+  });
+
+  it('should send PLAY with with actual current time when autoplay and preload', done => {
+    config.sources.startTime = 2.5;
+    config.playback = {preload: 'auto'};
+    config.playback = {autoplay: 'true'};
+    player = setup(config);
+    player.addEventListener(player.Event.PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('PLAY');
+        payload.bookmark.position.should.equal(player.currentTime);
+        delete config.sources.startTime;
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    player.play();
+  });
+
+  it('should send PLAY event with position 0 after start over', done => {
+    config.sources.startTime = 2;
+    player = setup(config);
+    player.addEventListener(player.Event.FIRST_PLAYING, () => {
+      player.addEventListener(player.Event.PLAY, () => {
+        try {
+          const payload = JSON.parse(sendSpy.lastCall.args[0]);
+          verifyPayloadProperties(payload.ks, payload.bookmark);
+          payload.bookmark.playerData.action.should.equal('PLAY');
+          payload.bookmark.position.should.equal(player.currentTime);
+          delete config.sources.startTime;
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+      player.currentTime = player.duration;
+    });
+    player.addEventListener(player.Event.ENDED, () => {
+      player.play();
+    });
+
+    player.play();
+  });
+
   it('should send pause', done => {
     player = setup(config);
     player.addEventListener(player.Event.PAUSE, () => {
