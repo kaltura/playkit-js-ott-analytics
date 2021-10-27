@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.3](https://github.com/kaltura/playkit-ott-analytics/compare/v1.0.2...v1.0.3) (2021-10-27)
+
+
+### Bug Fixes
+
+* **FEC-11621:** Analytics plugins send position 0 even startTime set ([#63](https://github.com/kaltura/playkit-ott-analytics/issues/63)) ([bdf53af](https://github.com/kaltura/playkit-ott-analytics/commit/bdf53af))
+
+
+### Build System
+
+* fix node 17 issue ([9d01e50](https://github.com/kaltura/playkit-ott-analytics/commit/9d01e50))
+
+
+
 ### [1.0.2](https://github.com/kaltura/playkit-ott-analytics/compare/v1.0.1...v1.0.2) (2021-09-30)
 
 
