@@ -243,14 +243,18 @@ class OttAnalytics extends BasePlugin {
    * @returns {Object} - The player params
    */
   get _eventParams(): Object {
-    return {
-      mediaType: Utils.Object.hasPropertyPath(this.player.config, 'sources.metadata.mediaType')
-        ? this.player.config.sources.metadata.mediaType
-        : MEDIA_TYPE,
+    const eventParams: Object = {
+      mediaType: Utils.Object.hasPropertyPath(this.player.sources, 'metadata.mediaType') ? this.player.sources.metadata.mediaType : MEDIA_TYPE,
       fileId: this._fileId,
-      mediaId: this.config.entryId,
+      mediaId: Utils.Object.hasPropertyPath(this.player.sources, 'metadata.recordingId')
+        ? this.player.sources.metadata.recordingId
+        : this.config.entryId,
       position: this._getPosition()
     };
+    if (Utils.Object.hasPropertyPath(this.player.sources, 'metadata.epgId')) {
+      eventParams.programId = this.player.sources.metadata.epgId;
+    }
+    return eventParams;
   }
 
   /**
@@ -289,6 +293,9 @@ class OttAnalytics extends BasePlugin {
       position: params.position,
       playerData: playerData
     };
+    if (params.programId) {
+      bookMark.programId = params.programId;
+    }
     const request: RequestBuilder = OTTBookmarkService.add(this.config.serviceUrl, this.config.ks, bookMark);
     this.logger.debug('sending bookmark', bookMark);
     request.doHttpRequest().then(
