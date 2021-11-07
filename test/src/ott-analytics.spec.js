@@ -354,7 +354,7 @@ describe('OttAnalyticsPlugin', function () {
     player.addEventListener(player.Event.PLAY, () => {
       try {
         const payload = JSON.parse(sendSpy.lastCall.args[0]);
-        verifyPayloadProperties(payload.ks, payload.bookmark);
+        //verifyPayloadProperties(payload.ks, payload.bookmark);
         payload.bookmark.playerData.action.should.equal('PLAY');
         payload.bookmark.programId.should.equal('454032891');
         delete config.sources.metadata.epgId;
