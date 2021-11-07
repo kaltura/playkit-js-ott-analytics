@@ -351,11 +351,11 @@ describe('OttAnalyticsPlugin', function () {
   it('should send PLAY with epgId as programId param when it exists', done => {
     config.sources.metadata.epgId = '454032891';
     player = setup(config);
-    player.addEventListener(player.Event.PLAY, () => {
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
       try {
         const payload = JSON.parse(sendSpy.lastCall.args[0]);
-        //verifyPayloadProperties(payload.ks, payload.bookmark);
-        payload.bookmark.playerData.action.should.equal('PLAY');
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('FIRST_PLAY');
         payload.bookmark.programId.should.equal('454032891');
         delete config.sources.metadata.epgId;
         done();
