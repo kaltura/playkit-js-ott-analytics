@@ -35,7 +35,8 @@ class OttAnalytics extends BasePlugin {
     startTime: null,
     disableMediaHit: false,
     disableMediaMark: false,
-    experimentalEnableLiveMediaHit: false
+    experimentalEnableLiveMediaHit: false,
+    epgId: null
   };
 
   /**
@@ -61,9 +62,9 @@ class OttAnalytics extends BasePlugin {
    * @constructor
    * @param {string} name - The plugin name.
    * @param {Player} player - The player instance.
-   * @param {Object} config - The plugin config.
+   * @param {OttAnalyticsConfig} config - The OttAnalytics plugin config.
    */
-  constructor(name: string, player: Player, config: Object) {
+  constructor(name: string, player: Player, config: OttAnalyticsConfig) {
     super(name, player, config);
     if (this.config.serviceUrl) {
       this._registerListeners();
@@ -84,6 +85,7 @@ class OttAnalytics extends BasePlugin {
     this._didFirstPlay = false;
     this._playerDidError = false;
     this._isLoaded = false;
+    this.updateConfig({epgId: null});
   }
 
   /**
@@ -251,10 +253,18 @@ class OttAnalytics extends BasePlugin {
         : this.config.entryId,
       position: this._getPosition()
     };
-    if (Utils.Object.hasPropertyPath(this.player.sources, 'metadata.epgId')) {
-      eventParams.programId = this.player.sources.metadata.epgId;
-    }
+    const epgId = this._getEpgId();
+    if (epgId) eventParams.programId = epgId;
     return eventParams;
+  }
+
+  _getEpgId(): string | null {
+    if (this.config.epgId) {
+      return this.config.epgId;
+    } else if (Utils.Object.hasPropertyPath(this.player.sources, 'metadata.epgId')) {
+      return this.player.sources.metadata.epgId;
+    }
+    return null;
   }
 
   /**
