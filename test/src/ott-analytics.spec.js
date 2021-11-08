@@ -367,13 +367,13 @@ describe('OttAnalyticsPlugin', function () {
   });
 
   it('should send PLAY with recordingId as id param instead of entryId when it exist', done => {
-    config.sources.metadata.recordingId = '777032895';
+    config.sources.metadata.recordingId = '747032895';
     player = setup(config);
     player.addEventListener(player.Event.PLAY, () => {
       try {
         const payload = JSON.parse(sendSpy.lastCall.args[0]);
         payload.bookmark.playerData.action.should.equal('PLAY');
-        payload.bookmark.id.should.equal('777032895');
+        payload.bookmark.id.should.equal('747032895');
         delete config.sources.metadata.recordingId;
         done();
       } catch (e) {
