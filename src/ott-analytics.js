@@ -35,8 +35,7 @@ class OttAnalytics extends BasePlugin {
     startTime: null,
     disableMediaHit: false,
     disableMediaMark: false,
-    experimentalEnableLiveMediaHit: false,
-    epgId: null
+    experimentalEnableLiveMediaHit: false
   };
 
   /**
@@ -85,7 +84,6 @@ class OttAnalytics extends BasePlugin {
     this._didFirstPlay = false;
     this._playerDidError = false;
     this._isLoaded = false;
-    this.updateConfig({epgId: null});
   }
 
   /**
@@ -253,18 +251,10 @@ class OttAnalytics extends BasePlugin {
         : this.config.entryId,
       position: this._getPosition()
     };
-    const epgId = this._getEpgId();
-    if (epgId) eventParams.programId = epgId;
-    return eventParams;
-  }
-
-  _getEpgId(): string | null {
-    if (this.config.epgId) {
-      return this.config.epgId;
-    } else if (Utils.Object.hasPropertyPath(this.player.sources, 'metadata.epgId')) {
-      return this.player.sources.metadata.epgId;
+    if (Utils.Object.hasPropertyPath(this.player.sources, 'metadata.epgId')) {
+      eventParams.programId = this.player.sources.metadata.epgId;
     }
-    return null;
+    return eventParams;
   }
 
   /**
