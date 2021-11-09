@@ -348,6 +348,41 @@ describe('OttAnalyticsPlugin', function () {
     player.play();
   });
 
+  it('should send PLAY with epgId as programId param when it exists', done => {
+    config.sources.metadata.epgId = '452032891';
+    player = setup(config);
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        verifyPayloadProperties(payload.ks, payload.bookmark);
+        payload.bookmark.playerData.action.should.equal('FIRST_PLAY');
+        payload.bookmark.programId.should.equal('452032891');
+        delete config.sources.metadata.epgId;
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    player.play();
+  });
+
+  it('should send PLAY with recordingId as id param instead of entryId when it exist', done => {
+    config.sources.metadata.recordingId = '747032895';
+    player = setup(config);
+    player.addEventListener(player.Event.PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        payload.bookmark.playerData.action.should.equal('PLAY');
+        payload.bookmark.id.should.equal('747032895');
+        delete config.sources.metadata.recordingId;
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    player.play();
+  });
+
   it('should send pause', done => {
     player = setup(config);
     player.addEventListener(player.Event.PAUSE, () => {
