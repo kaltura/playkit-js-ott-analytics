@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/kaltura/playkit-ott-analytics/compare/v1.0.3...v1.1.0) (2021-11-10)
+
+
+### Features
+
+* **FEC-11611:** [Web] Pass the program ID when sending a bookmark ([#64](https://github.com/kaltura/playkit-ott-analytics/issues/64)) ([700f1d7](https://github.com/kaltura/playkit-ott-analytics/commit/700f1d7))
+
+
+
 ### [1.0.3](https://github.com/kaltura/playkit-ott-analytics/compare/v1.0.2...v1.0.3) (2021-10-27)
 
 
