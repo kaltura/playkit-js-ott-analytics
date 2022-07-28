@@ -5,6 +5,7 @@ import {OTTBookmarkService, RequestBuilder} from 'playkit-js-providers/dist/play
 type OttAnalyticsEventType = {[event: string]: string};
 const {Error, FakeEvent, Utils} = core;
 const MEDIA_TYPE = 'MEDIA';
+const CONTEXT_TYPE = 'PLAYBACK';
 const BookmarkEvent: OttAnalyticsEventType = {
   LOAD: 'LOAD',
   PLAY: 'PLAY',
@@ -245,6 +246,7 @@ class OttAnalytics extends BasePlugin {
   get _eventParams(): Object {
     const eventParams: Object = {
       mediaType: Utils.Object.hasPropertyPath(this.player.sources, 'metadata.mediaType') ? this.player.sources.metadata.mediaType : MEDIA_TYPE,
+      contextType: Utils.Object.hasPropertyPath(this.player.sources, 'metadata.contextType') ? this.player.sources.metadata.contextType : CONTEXT_TYPE,
       fileId: this._fileId,
       mediaId: Utils.Object.hasPropertyPath(this.player.sources, 'metadata.recordingId')
         ? this.player.sources.metadata.recordingId
