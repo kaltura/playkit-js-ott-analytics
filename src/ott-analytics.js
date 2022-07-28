@@ -291,6 +291,7 @@ class OttAnalytics extends BasePlugin {
     };
     const bookMark: Object = {
       type: params.mediaType,
+      context: params.contextType,
       id: params.mediaId,
       position: params.position,
       playerData: playerData
