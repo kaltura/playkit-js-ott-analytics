@@ -522,14 +522,12 @@ describe('OttAnalyticsPlugin', function () {
     player.play();
   });
 
-  it('should get default value for mediaType when mediaType doesnt exist in config', done => {
-    let configMedia = config;
-    delete configMedia.sources.metadata.mediaType;
-    player = setup(configMedia);
+  it('should get context type from config', done => {
+    player = setup(config);
     player.addEventListener(player.Event.FIRST_PLAY, () => {
       try {
         const payload = JSON.parse(sendSpy.lastCall.args[0]);
-        payload.bookmark.type.should.equal('MEDIA');
+        payload.bookmark.context.should.equal(contextType);
         done();
       } catch (err) {
         done(err);
@@ -538,14 +536,14 @@ describe('OttAnalyticsPlugin', function () {
     player.play();
   });
 
-  it('should get default value for contextType when contextType doesnt exist in config', done => {
+  it('should get default value for mediaType when mediaType doesnt exist in config', done => {
     let configMedia = config;
-    delete configMedia.sources.metadata.contextType;
+    delete configMedia.sources.metadata.mediaType;
     player = setup(configMedia);
     player.addEventListener(player.Event.FIRST_PLAY, () => {
       try {
         const payload = JSON.parse(sendSpy.lastCall.args[0]);
-        payload.bookmark.context.should.equal('PLAYBACK');
+        payload.bookmark.type.should.equal('MEDIA');
         done();
       } catch (err) {
         done(err);
