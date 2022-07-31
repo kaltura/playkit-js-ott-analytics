@@ -10,6 +10,7 @@ describe('OttAnalyticsPlugin', function () {
   let player, sendSpy, config;
   const sandbox = sinon.createSandbox();
   const mediaType = 'media test';
+  const contextType = 'PLAYBACK';
 
   /**
    * @param {string} ks - ks
@@ -52,6 +53,7 @@ describe('OttAnalyticsPlugin', function () {
         dvr: false,
         metadata: {
           mediaType: mediaType,
+          contextType: contextType,
           '0': {key: 'Genre', value: 'Comedy|Action|Adventure|Animation|Family|Editor|'},
           '1': {key: 'Parental Rating', value: 'G|R|'},
           '2': {key: 'QUALITY', value: 'hd|sd|'},
