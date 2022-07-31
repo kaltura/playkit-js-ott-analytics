@@ -33,12 +33,12 @@ describe('OttAnalyticsPlugin', function () {
       logLevel: 'DEBUG',
       name: 'Big Hero 6',
       session: {
-        partnerId: 198,
+        partnerId: 3009,
         ks:
-          'djJ8MTk4fPIz_ugsVrW8JwEX7detBwnuNZq2YVowN9VlB1d8gkHLY1wR6-GaeGYBxD6XBQ6SvDw6crDHhFpvsi7jcudRS2t1bSNFgIT5H2sZrHAGg_uasYXV6YHsm43_d_PsKgmnunAjFniOYXggUo8cT9RtSPo='
+          'djJ8MzAwOXyuskRuQslNisW6wV85AfB4ZdBXpX_iiS6fofvXYa4-kVPhX2-ZAUBgEpSKg3OBWCOc_d-AVrgSpi1ZZaReR2kuob084Ki6JagxipcJ9LFlOFGR6JEC-_vEyhV2W88rNO0wZH0OkG1eVgepHM7QNOCZoLdSeQHbjcRgBg9QVi-NlAyPuYMLn-2vXPsyL03RIABL0El7kfoB6b3bK4Dj_IG7IzhkZnFDseHcmaeGQBhPspDZOJWRWRtaAtLqTO15VviAY7W9sAH1qOOdfA6BLdt5xje3-s1mJHlJ07O6jLkzhba9DezFcnelJUihcObFsZ6PvwDbhh-SUPIBwqZy4N6u'
       },
       sources: {
-        id: 258457,
+        id: 548574,
         progressive: [
           {
             id: '391837,url',
@@ -72,7 +72,7 @@ describe('OttAnalyticsPlugin', function () {
     config.plugins = {
       ottAnalytics: {
         entryId: config.sources.id,
-        fileId: '392026',
+        fileId: '1199742',
         ks: config.session.ks,
         partnerId: config.session.partnerId,
         mediaHitInterval: 2
@@ -84,7 +84,7 @@ describe('OttAnalyticsPlugin', function () {
     sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
     config.plugins.ottAnalytics.ks = config.session.ks;
     config.plugins.ottAnalytics.isAnonymous = false;
-    config.plugins.ottAnalytics.serviceUrl = '//api-preprod.ott.kaltura.com/v4_7/api_v3';
+    config.plugins.ottAnalytics.serviceUrl = '//rest-us.ott.kaltura.com/v4_5/api_v3/';
   });
 
   afterEach(function () {
@@ -522,20 +522,6 @@ describe('OttAnalyticsPlugin', function () {
     player.play();
   });
 
-  it('should get context type from config', done => {
-    player = setup(config);
-    player.addEventListener(player.Event.FIRST_PLAY, () => {
-      try {
-        const payload = JSON.parse(sendSpy.lastCall.args[0]);
-        payload.bookmark.context.should.equal(contextType);
-        done();
-      } catch (err) {
-        done(err);
-      }
-    });
-    player.play();
-  });
-
   it('should get default value for mediaType when mediaType doesnt exist in config', done => {
     let configMedia = config;
     delete configMedia.sources.metadata.mediaType;
@@ -544,6 +530,22 @@ describe('OttAnalyticsPlugin', function () {
       try {
         const payload = JSON.parse(sendSpy.lastCall.args[0]);
         payload.bookmark.type.should.equal('MEDIA');
+        done();
+      } catch (err) {
+        done(err);
+      }
+    });
+    player.play();
+  });
+
+  it('should get default value for contextType when contextType doesnt exist in config', done => {
+    let configMedia = config;
+    delete configMedia.sources.metadata.contextType;
+    player = setup(configMedia);
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        payload.bookmark.context.should.equal('PLAYBACK');
         done();
       } catch (err) {
         done(err);
