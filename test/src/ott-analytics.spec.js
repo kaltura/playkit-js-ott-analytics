@@ -535,6 +535,22 @@ describe('OttAnalyticsPlugin', function () {
     });
     player.play();
   });
+
+  it('should get default value for contextType when contextType doesnt exist in config', done => {
+    let configMedia = config;
+    delete configMedia.sources.metadata.contextType;
+    player = setup(configMedia);
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
+      try {
+        const payload = JSON.parse(sendSpy.lastCall.args[0]);
+        payload.bookmark.context.should.equal('PLAYBACK');
+        done();
+      } catch (err) {
+        done(err);
+      }
+    });
+    player.play();
+  });
 });
 
 describe('_sendAnalytics', () => {
