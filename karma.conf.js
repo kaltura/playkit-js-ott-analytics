@@ -4,29 +4,29 @@ const isMacOS = /^darwin/.test(process.platform);
 const customLaunchers = {
   Chrome_travis_ci: {
     base: 'Chrome',
-    flags: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required']
-  }
-};
-
-const launchers = {
-  Chrome_browser: {
-    base: 'Chrome',
-    flags: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required']
+    flags: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required', '--auto-open-devtools-for-tabs']
   }
 };
 
 module.exports = function (config) {
   let karmaConf = {
+    browserNoActivityTimeout: 1000000,
+
+    browserDisconnectTimeout: 1000000,
+    captureTimeout: 1000000,
     logLevel: config.LOG_INFO,
-    browserDisconnectTimeout: 60000,
-    browserNoActivityTimeout: 60000,
-    customLaunchers: launchers,
-    browsers: ['Chrome_browser', 'Firefox'],
+    browsers: ['Chrome', 'Firefox'],
     concurrency: 1,
     singleRun: true,
     colors: true,
     frameworks: ['mocha'],
-    files: ['test/setup/karma.js'],
+    files: [
+      'test/setup/karma.js',
+      {
+        pattern: 'src/assets/audios.mp4',
+        included: false
+      }
+    ],
     preprocessors: {
       'src/**/*.js': ['webpack', 'sourcemap'],
       'test/setup/karma.js': ['webpack', 'sourcemap']
@@ -44,7 +44,7 @@ module.exports = function (config) {
     client: {
       mocha: {
         reporter: 'html',
-        timeout: 10000
+        timeout: 30 * 60 * 1000
       }
     }
   };
