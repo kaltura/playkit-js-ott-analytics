@@ -32,12 +32,12 @@ describe('OttAnalyticsPlugin', function () {
       logLevel: 'DEBUG',
       name: 'Big Hero 6',
       session: {
-        partnerId: 3009,
+        partnerId: 198,
         ks:
-          'djJ8MzAwOXzVyGxlU3utbJOlE95L7xAMQxbvSITFPzqRvLEjm-ixUxzAnDTNaX08oNemYYywgAnpUHbCaIh3kC38yQwBNaj7yTTZl9GONRpEo1rlV7Gu6DWhUhORSrNCNQdIQCcgiVrfk1cBIqcMOSfhlenJv7wftZKPjh7Z283cZUPZ6Aio8lu_RiN4_gh6EDWsmktZuW4wPaAjk5GiduO4xGkLja-7WpOln4ygrVoXXNN4GYOvje6GutU1Ntrm67jGhMAyheCbkbYYQpYMUV18j2_E9ojep7fOWa7w8m10Ue2b3pPQxgu2-65zpTdDKiK1KDKblAxKmGnKucJ7AXeXB25lfFx6'
+          'djJ8MTk4fPIz_ugsVrW8JwEX7detBwnuNZq2YVowN9VlB1d8gkHLY1wR6-GaeGYBxD6XBQ6SvDw6crDHhFpvsi7jcudRS2t1bSNFgIT5H2sZrHAGg_uasYXV6YHsm43_d_PsKgmnunAjFniOYXggUo8cT9RtSPo='
       },
       sources: {
-        id: 548574,
+        id: 258457,
         progressive: [
           {
             id: '391837,url',
@@ -46,11 +46,7 @@ describe('OttAnalyticsPlugin', function () {
           }
         ],
         dash: [],
-        hls: [ {
-          id: '391837,url',
-            url: 'https://www.w3schools.com/tags/movie.mp4',
-            mimetype: 'application/x-mpegURL'
-        }],
+        hls: [],
         type: 'Vod',
         duration: 1000,
         dvr: false,
@@ -74,7 +70,7 @@ describe('OttAnalyticsPlugin', function () {
     config.plugins = {
       ottAnalytics: {
         entryId: config.sources.id,
-        fileId: '1199742',
+        fileId: '392026',
         ks: config.session.ks,
         partnerId: config.session.partnerId,
         mediaHitInterval: 2
@@ -86,7 +82,7 @@ describe('OttAnalyticsPlugin', function () {
     sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
     config.plugins.ottAnalytics.ks = config.session.ks;
     config.plugins.ottAnalytics.isAnonymous = false;
-    config.plugins.ottAnalytics.serviceUrl = '//rest-us.ott.kaltura.com/v4_5/api_v3/';
+    config.plugins.ottAnalytics.serviceUrl = '//api-preprod.ott.kaltura.com/v4_7/api_v3';
   });
 
   afterEach(function () {
