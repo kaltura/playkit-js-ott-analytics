@@ -21,7 +21,7 @@ module.exports = function (config) {
     browserDisconnectTimeout: 60000,
     browserNoActivityTimeout: 60000,
     customLaunchers: launchers,
-    browsers: ['Chrome_browser'],
+    browsers: ['Chrome_browser', 'Firefox'],
     concurrency: 1,
     singleRun: true,
     colors: true,
@@ -56,7 +56,7 @@ module.exports = function (config) {
     if (isWindows) {
       karmaConf.browsers.push('IE');
     } else if (isMacOS) {
-      //karmaConf.browsers.push('Safari');
+      karmaConf.browsers.push('Safari');
     }
   }
 
