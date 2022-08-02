@@ -6237,7 +6237,7 @@ pkg-dir@^4.1.0, pkg-dir@^4.2.0:
 
 "playkit-js-providers@https://github.com/kaltura/playkit-js-providers.git#master":
   version "2.30.0"
-  resolved "https://github.com/kaltura/playkit-js-providers.git#2c452665c671c5e1adc96072827dc91553056a9d"
+  resolved "https://github.com/kaltura/playkit-js-providers.git#49b7d52f936b9b6da835c85a38a91c670b82d586"
 
 please-upgrade-node@^3.2.0:
   version "3.2.0"
