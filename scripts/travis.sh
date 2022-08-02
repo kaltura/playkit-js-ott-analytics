@@ -1,5 +1,5 @@
 #!/bin/sh
-# https://docs.travis-ci.com/user/customizing-the-build/#Implementing-Complex-Build-Steps
+#  https://docs.travis-ci.com/user/customizing-the-build/#Implementing-Complex-Build-Steps
 set -ev
 yarn install
 if [ "${TRAVIS_MODE}" = "lint" ]; then
