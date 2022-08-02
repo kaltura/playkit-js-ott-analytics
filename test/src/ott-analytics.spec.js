@@ -69,6 +69,7 @@ describe('OttAnalyticsPlugin', function () {
         }
       }
     };
+    
     config.plugins = {
       ottAnalytics: {
         entryId: config.sources.id,
