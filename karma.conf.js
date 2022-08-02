@@ -54,7 +54,7 @@ module.exports = function (config) {
     karmaConf.browsers = ['Chrome_travis_ci'];
   } else {
     if (isWindows) {
-      karmaConf.browsers.push('IE');
+      //karmaConf.browsers.push('IE');
     } else if (isMacOS) {
       karmaConf.browsers.push('Safari');
     }
