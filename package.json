@@ -13,13 +13,13 @@
     "playkit-js-ott-analytics",
     "html5 player"
   ],
-  "homepage": "https://github.com/kaltura/playkit-ott-analytics#readme",
+  "homepage": "https://github.com/kaltura/playkit-js-ott-analytics#readme",
   "bugs": {
-    "url": "https://github.com/kaltura/playkit-ott-analytics/issues"
+    "url": "https://github.com/kaltura/playkit-js-ott-analytics/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kaltura/playkit-ott-analytics.git"
+    "url": "git+https://github.com/kaltura/playkit-js-ott-analytics.git"
   },
   "license": "AGPL-3.0",
   "main": "dist/playkit-ott-analytics.js",
