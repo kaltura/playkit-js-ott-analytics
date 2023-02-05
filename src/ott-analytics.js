@@ -1,6 +1,7 @@
 //@flow
 import {core, BasePlugin} from 'kaltura-player-js';
 import {OTTBookmarkService, RequestBuilder} from 'playkit-js-providers/dist/playkit-bookmark-service';
+import {ContextType, MediaType} from 'playkit-js-providers';
 
 type OttAnalyticsEventType = {[event: string]: string};
 const {Error, FakeEvent, Utils} = core;
@@ -255,7 +256,13 @@ class OttAnalytics extends BasePlugin {
         : this.config.entryId,
       position: this._getPosition()
     };
-    if (Utils.Object.hasPropertyPath(this.player.sources, 'metadata.epgId')) {
+    if (
+      eventParams.mediaType === MediaType.RECORDING ||
+      eventParams.contextType === ContextType.CATCHUP ||
+      eventParams.contextTyp === ContextType.START_OVER
+    ) {
+      eventParams.programId = eventParams.mediaId;
+    } else if (Utils.Object.hasPropertyPath(this.player.sources, 'metadata.epgId')) {
       eventParams.programId = this.player.sources.metadata.epgId;
     }
     return eventParams;
