@@ -255,7 +255,13 @@ class OttAnalytics extends BasePlugin {
         : this.config.entryId,
       position: this._getPosition()
     };
-    if (Utils.Object.hasPropertyPath(this.player.sources, 'metadata.epgId')) {
+    if (
+      eventParams.mediaType.toUpperCase() === 'RECORDING' ||
+      eventParams.contextType.toUpperCase() === 'CATCHUP' ||
+      eventParams.contextType.toUpperCase() === 'START_OVER'
+    ) {
+      eventParams.programId = eventParams.mediaId;
+    } else if (Utils.Object.hasPropertyPath(this.player.sources, 'metadata.epgId')) {
       eventParams.programId = this.player.sources.metadata.epgId;
     }
     return eventParams;
