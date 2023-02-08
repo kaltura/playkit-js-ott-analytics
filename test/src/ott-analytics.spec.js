@@ -34,8 +34,7 @@ describe('OttAnalyticsPlugin', function () {
       name: 'Big Hero 6',
       session: {
         partnerId: 3009,
-        ks:
-          'djJ8MzAwOXyuskRuQslNisW6wV85AfB4ZdBXpX_iiS6fofvXYa4-kVPhX2-ZAUBgEpSKg3OBWCOc_d-AVrgSpi1ZZaReR2kuob084Ki6JagxipcJ9LFlOFGR6JEC-_vEyhV2W88rNO0wZH0OkG1eVgepHM7QNOCZoLdSeQHbjcRgBg9QVi-NlAyPuYMLn-2vXPsyL03RIABL0El7kfoB6b3bK4Dj_IG7IzhkZnFDseHcmaeGQBhPspDZOJWRWRtaAtLqTO15VviAY7W9sAH1qOOdfA6BLdt5xje3-s1mJHlJ07O6jLkzhba9DezFcnelJUihcObFsZ6PvwDbhh-SUPIBwqZy4N6u'
+        ks: 'djJ8MzAwOXyuskRuQslNisW6wV85AfB4ZdBXpX_iiS6fofvXYa4-kVPhX2-ZAUBgEpSKg3OBWCOc_d-AVrgSpi1ZZaReR2kuob084Ki6JagxipcJ9LFlOFGR6JEC-_vEyhV2W88rNO0wZH0OkG1eVgepHM7QNOCZoLdSeQHbjcRgBg9QVi-NlAyPuYMLn-2vXPsyL03RIABL0El7kfoB6b3bK4Dj_IG7IzhkZnFDseHcmaeGQBhPspDZOJWRWRtaAtLqTO15VviAY7W9sAH1qOOdfA6BLdt5xje3-s1mJHlJ07O6jLkzhba9DezFcnelJUihcObFsZ6PvwDbhh-SUPIBwqZy4N6u'
       },
       sources: {
         id: 548574,
@@ -54,16 +53,16 @@ describe('OttAnalyticsPlugin', function () {
         metadata: {
           mediaType: mediaType,
           contextType: contextType,
-          '0': {key: 'Genre', value: 'Comedy|Action|Adventure|Animation|Family|Editor|'},
-          '1': {key: 'Parental Rating', value: 'G|R|'},
-          '2': {key: 'QUALITY', value: 'hd|sd|'},
-          '3': {key: 'Free', value: 'yes|no|adi|'},
-          '4': {key: 'Source', value: 'Web3|Editor|'},
-          '5': {key: 'Country', value: ''},
-          '6': {key: 'QUALITY', value: ''},
-          '7': {key: 'Epg ID', value: ''},
-          '8': {key: 'Release year', value: 2012},
-          '9': {key: 'Catchup allowed', value: false},
+          0: {key: 'Genre', value: 'Comedy|Action|Adventure|Animation|Family|Editor|'},
+          1: {key: 'Parental Rating', value: 'G|R|'},
+          2: {key: 'QUALITY', value: 'hd|sd|'},
+          3: {key: 'Free', value: 'yes|no|adi|'},
+          4: {key: 'Source', value: 'Web3|Editor|'},
+          5: {key: 'Country', value: ''},
+          6: {key: 'QUALITY', value: ''},
+          7: {key: 'Epg ID', value: ''},
+          8: {key: 'Release year', value: 2012},
+          9: {key: 'Catchup allowed', value: false},
           description:
             '*** Free *** The special bond that develops between plus-sized inflatable robot Baymax, and prodigy Hiro Hamada, who team up with a group of friends to form a band of high-tech heroes.'
         }
