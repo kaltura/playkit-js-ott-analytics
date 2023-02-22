@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.2](https://github.com/kaltura/playkit-js-ott-analytics/compare/v1.1.1...v1.1.2) (2023-02-22)
+
+
+### Bug Fixes
+
+* **FEC-12773:** cont. update yarn.lock ([#88](https://github.com/kaltura/playkit-js-ott-analytics/issues/88)) ([236298f](https://github.com/kaltura/playkit-js-ott-analytics/commit/236298f))
+* **FEC-127873:** incase of CATCHUP, START_OVER and RECORDING use bookmark mediaId as programId ([#87](https://github.com/kaltura/playkit-js-ott-analytics/issues/87)) ([5673cc3](https://github.com/kaltura/playkit-js-ott-analytics/commit/5673cc3))
+
+
+
 ### [1.1.1](https://github.com/kaltura/playkit-ott-analytics/compare/v1.1.0...v1.1.1) (2022-08-04)
 
 
