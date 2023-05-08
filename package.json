@@ -57,6 +57,7 @@
     "@babel/preset-flow": "^7.10.4",
     "@babel/register": "^7.10.5",
     "@playkit-js/playkit-js": "0.63.0",
+    "@playkit-js/playkit-js-providers": "2.39.1",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-istanbul": "^6.0.0",
@@ -88,7 +89,6 @@
     "lint-staged": "^10.2.11",
     "mocha": "^8.0.1",
     "mocha-cli": "^1.0.1",
-    "playkit-js-providers": "https://github.com/kaltura/playkit-js-providers.git#master",
     "prettier": "^2.0.5",
     "sinon": "^9.0.2",
     "sinon-chai": "^3.5.0",
@@ -100,8 +100,8 @@
   },
   "peerDependencies": {
     "@playkit-js/playkit-js": "0.63.0",
-    "kaltura-player-js": "https://github.com/kaltura/kaltura-player-js.git#master",
-    "playkit-js-providers": "https://github.com/kaltura/playkit-js-providers.git#master"
+    "@playkit-js/playkit-js-providers": "2.39.1",
+    "kaltura-player-js": "https://github.com/kaltura/kaltura-player-js.git#master"
   },
   "publishConfig": {
     "access": "public"
