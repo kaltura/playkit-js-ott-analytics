@@ -57,7 +57,7 @@
     "@babel/preset-flow": "^7.10.4",
     "@babel/register": "^7.10.5",
     "@playkit-js/playkit-js": "0.63.0",
-    "@playkit-js/playkit-js-providers": "2.39.1",
+    "@playkit-js/playkit-js-providers": "2.39.2",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-istanbul": "^6.0.0",
@@ -100,7 +100,7 @@
   },
   "peerDependencies": {
     "@playkit-js/playkit-js": "0.63.0",
-    "@playkit-js/playkit-js-providers": "2.39.1",
+    "@playkit-js/playkit-js-providers": "2.39.2",
     "kaltura-player-js": "https://github.com/kaltura/kaltura-player-js.git#master"
   },
   "publishConfig": {
