@@ -1,6 +1,6 @@
 //@flow
-import {core, BasePlugin} from 'kaltura-player-js';
-import {OTTBookmarkService, RequestBuilder} from 'playkit-js-providers/dist/playkit-bookmark-service';
+import {core, BasePlugin} from '@playkit-js/kaltura-player-js';
+import {OTTBookmarkService, RequestBuilder} from '@playkit-js/playkit-js-providers/dist/playkit-bookmark-service';
 
 type OttAnalyticsEventType = {[event: string]: string};
 const {Error, FakeEvent, Utils} = core;
