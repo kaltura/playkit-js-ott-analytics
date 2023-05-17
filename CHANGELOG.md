@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.1.4 (2023-05-17)
+
+
+### Bug Fixes
+
+* **FEC-13123:** replace travis with github actions ([#91](https://github.com/kaltura/playkit-js-ott-analytics/issues/91)) ([6894565](https://github.com/kaltura/playkit-js-ott-analytics/commit/6894565))
+
+
+
 ### 1.1.3 (2023-05-07)
 
 
