@@ -97,12 +97,12 @@
     "webpack-dev-server": "^3.11.0",
     "@playkit-js/playkit-js": "latest",
     "@playkit-js/kaltura-player-js": "latest",
-    "@playkit-js/playkit-js-providers": "2.39.4-canary.0-ab0b9a0"
+    "@playkit-js/playkit-js-providers": "latest"
   },
   "peerDependencies": {
     "@playkit-js/playkit-js": "latest",
     "@playkit-js/kaltura-player-js": "latest",
-    "@playkit-js/playkit-js-providers": "2.39.4-canary.0-ab0b9a0"
+    "@playkit-js/playkit-js-providers": "latest"
   },
   "publishConfig": {
     "access": "public"
