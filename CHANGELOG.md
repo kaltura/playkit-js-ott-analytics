@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.1.5 (2023-06-07)
+
+
+### Bug Fixes
+
+* **FEC-13123:** replace travis with github actions - fixed providers canary ([#94](https://github.com/kaltura/playkit-js-ott-analytics/issues/94)) ([fabc383](https://github.com/kaltura/playkit-js-ott-analytics/commit/fabc383))
+
+
+
 ### 1.1.4 (2023-05-17)
 
 
