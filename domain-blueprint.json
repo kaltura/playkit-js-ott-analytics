@@ -1,0 +1,134 @@
+{
+  "repositoryName": "playkit-js-ott-analytics",
+  "version": "1.0.0",
+  "lastUpdated": "2026-05-04",
+  "coreResponsibility": {
+    "summary": "A Kaltura Player plugin that provides OTT (Over-The-Top) analytics tracking by sending bookmark events to the Kaltura OTT backend to track playback progress, user engagement, and session management.",
+    "type": "plugin",
+    "category": "analytics"
+  },
+  "domainAndLogicOwnership": {
+    "featureOwnership": [
+      "OTT Bookmark event tracking (LOAD, PLAY, PAUSE, STOP, FINISH, FIRST_PLAY, BITRATE_CHANGE, HIT)",
+      "Media playback position tracking for VOD and live streams",
+      "MediaHit interval-based heartbeat reporting",
+      "MediaMark discrete event reporting",
+      "Concurrency limit detection and error handling",
+      "Anonymous user detection and reporting control",
+      "DVR/catchup/start-over position calculation",
+      "Recording and EPG (Electronic Program Guide) ID handling",
+      "Program ID tracking for recordings, catchup, and start-over content"
+    ],
+    "dataHandling": [
+      "Bookmark objects (type, context, id, position, playerData, programId)",
+      "Player state tracking (isPlaying, isLoaded, isFinished, isStopped, didFirstPlay)",
+      "Event parameters (mediaType, contextType, fileId, mediaId, position)",
+      "OTT metadata from player sources (mediaType, contextType, recordingId, epgId)",
+      "Session data (ks - Kaltura Session token, partnerId, entryId)"
+    ]
+  },
+  "integrationPoints": {
+    "upstream": [
+      {
+        "name": "@playkit-js/kaltura-player-js",
+        "description": "Core Kaltura Player - provides player instance, events, BasePlugin class, and core utilities"
+      },
+      {
+        "name": "@playkit-js/playkit-js-providers",
+        "description": "Provider layer - supplies OTTBookmarkService and RequestBuilder for backend communication"
+      }
+    ],
+    "downstream": [
+      {
+        "name": "Kaltura OTT Backend",
+        "description": "Receives bookmark analytics data via OTTBookmarkService.add() API calls"
+      },
+      {
+        "name": "Kaltura Player Applications",
+        "description": "OTT-based video applications that integrate this plugin for analytics tracking"
+      }
+    ],
+    "externalApis": [
+      {
+        "name": "Kaltura OTT Bookmark Service API",
+        "description": "Backend API endpoint for adding bookmark entries (playback progress, events)",
+        "endpoint": "Configured via serviceUrl in plugin config"
+      }
+    ]
+  },
+  "technicalStack": {
+    "primaryLanguages": ["JavaScript (ES6+)", "Flow (static type checking)"],
+    "frameworks": ["Webpack", "Babel"],
+    "testingTools": ["Karma", "Mocha", "Chai", "Sinon"],
+    "buildTools": ["Webpack", "npm/yarn"],
+    "codeQuality": ["ESLint", "Prettier", "Flow"]
+  },
+  "entryPoints": {
+    "sourceOfTruth": [
+      {
+        "path": "src/index.js",
+        "description": "Main entry point - exports OttAnalytics class and registers plugin with Kaltura Player"
+      },
+      {
+        "path": "src/ott-analytics.js",
+        "description": "Core plugin implementation - contains OttAnalytics class with all bookmark tracking logic"
+      }
+    ],
+    "configuration": [
+      {
+        "path": "flow-typed/types/ott-analytics-config.js",
+        "description": "Flow type definitions for plugin configuration options"
+      }
+    ],
+    "output": [
+      {
+        "path": "dist/playkit-ott-analytics.js",
+        "description": "Built distribution file exposed as playkit.ottanalytics"
+      }
+    ]
+  },
+  "triageKeywords": [
+    "ottAnalytics",
+    "OTT analytics",
+    "bookmark",
+    "bookmarkerror",
+    "concurrencylimit",
+    "mediaHit",
+    "mediaHitInterval",
+    "mediaMark",
+    "OTTBookmarkService",
+    "playback position",
+    "FIRST_PLAY event",
+    "isAnonymous",
+    "OTT backend",
+    "ks token",
+    "catchup",
+    "start-over",
+    "EPG ID",
+    "programId",
+    "DVR position"
+  ],
+  "errorSignatures": [
+    "block report for anonymous user",
+    "block MediaHit report",
+    "block MediaMark report",
+    "block report because of missing param",
+    "No service URL provided. Tracking aborted",
+    "Unable to parse file ID",
+    "bookmark error returned",
+    "bookmark concurrency block returned",
+    "Failed to send analytics event",
+    "4001"
+  ],
+  "configurationOptions": {
+    "mediaHitInterval": "Interval in seconds between periodic HIT events (default: 30)",
+    "isAnonymous": "Whether user is anonymous - blocks all reporting if true (default: true)",
+    "startTime": "Initial playback start time",
+    "disableMediaHit": "Disable periodic HIT event reporting (default: false)",
+    "disableMediaMark": "Disable discrete event reporting (default: false)",
+    "experimentalEnableLiveMediaHit": "Enable MediaHit for live streams (default: false)",
+    "serviceUrl": "OTT backend service URL (required)",
+    "ks": "Kaltura Session token (required)",
+    "entryId": "Media entry ID (required)"
+  }
+}
